@@ -2,8 +2,14 @@ import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Welcome } from "./components/Welcome";
+import { useDispatch } from "react-redux";
+import { setApiKey } from "./reducers/UserReducer";
 
 function App() {
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  const dispatch = useDispatch();
   // const [kanji, setKanji] = useState("");
   // const [similar, setSimilar] = useState([]);
 
@@ -30,6 +36,15 @@ function App() {
   //     });
   // };
 
+  useEffect(() => {
+    const apiKey = JSON.parse(localStorage.getItem("apiKey"))?.apiKey;
+
+    if (apiKey) {
+      dispatch(setApiKey(apiKey));
+      setShowWelcome(false);
+    }
+  }, []);
+
   return (
     <div className="App">
       {/* <button onClick={() => getKanji(479)}>get</button>
@@ -41,6 +56,7 @@ function App() {
           </p>
         ))}
       </div> */}
+      {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
     </div>
   );
 }
