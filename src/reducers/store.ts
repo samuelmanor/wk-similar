@@ -1,8 +1,10 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import QuestionReducer from "./QuestionReducer";
+import UserReducer from "./UserReducer";
 
 const reducer = combineReducers({
-  user: () => ({}), // holds api token, user stats (accuracy, etc), user settings (theme, etc), user account info (level, etc)
-  question: () => ({}), // holds selected kanji, possible answers, answer, etc
+  user: UserReducer,
+  question: QuestionReducer,
 });
 
 export default configureStore({ reducer });
