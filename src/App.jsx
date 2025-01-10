@@ -8,9 +8,9 @@ import { setKanji } from "./reducers/QuestionReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
-  const [availableKanji, setAvailableKanji] = useState(0);
+  const [availableKanji, setAvailableKanji] = useState(0); // list of kanji objects from the api
   const [currentKanji, setCurrentKanji] = useState(null); // random kanji object from the api
-  const kanji = useSelector((state) => state.question.kanji);
+  const kanji = useSelector((state) => state.question.kanji); // current valid kanji object from the store
 
   const apiKey = useSelector((state) => state.user.apiKey);
 
@@ -65,6 +65,7 @@ function App() {
 
   /**
    * Picks a random kanji from the available kanji, then fetches it
+   * @param {array} data the array of kanji objects to pick from; defaults to {@link availableKanji}
    */
   const pickRandomKanji = (data = availableKanji) => {
     const limit = data.length > 500 ? 500 : data.length;
