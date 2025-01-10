@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import { kanji } from "../reducers/QuestionReducer";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
 
 interface OptionProps {
   id: number;
 }
 
 export const Option: FC<OptionProps> = ({ id }) => {
+  const [selected, setSelected] = useState(false);
   const [kanji, setKanji] = useState<kanji>({
     id: 0,
     character: "",
@@ -17,7 +19,26 @@ export const Option: FC<OptionProps> = ({ id }) => {
     meanings: [],
     similarIds: [],
   });
+  const answer = useSelector((state: any) => state.question.kanji.id);
   const apiKey = useSelector((state: any) => state.user.apiKey);
+
+  const questionAnswered = useSelector((state: any) => state.question.answered);
+  const questionCorrect = useSelector((state: any) => state.question.correct);
+
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (!questionAnswered) {
+      setSelected(true);
+      dispatch(setAnswered(true));
+
+      if (id === answer ? true : false) {
+        dispatch(setCorrect(true));
+      } else {
+        dispatch(setCorrect(false));
+      }
+    }
+  };
 
   useEffect(() => {
     axios
@@ -41,9 +62,28 @@ export const Option: FC<OptionProps> = ({ id }) => {
       });
   }, [id]);
 
+  const bgColor = () => {
+    if (questionAnswered) {
+      if (questionCorrect) {
+        if (id === answer) {
+          return "green";
+        } else {
+          return "gray";
+        }
+      } else {
+        if (id === answer) {
+          return "green";
+        } else if (selected) {
+          return "red";
+        } else {
+          return "gray";
+        }
+      }
+    }
+  };
+
   return (
-    <div onClick={() => console.log(kanji)}>
-      {/* <p onClick={() => console.log(id)}>option</p> */}
+    <div onClick={handleClick} style={{ backgroundColor: bgColor() }}>
       <h1>{kanji.character}</h1>
     </div>
   );

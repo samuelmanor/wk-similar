@@ -5,13 +5,14 @@ import { Welcome } from "./components/Welcome";
 import { Question } from "./components/Question";
 import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
-import { setKanji } from "./reducers/QuestionReducer";
+import { setKanji, setAnswered, setCorrect } from "./reducers/QuestionReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [availableKanji, setAvailableKanji] = useState(0); // list of kanji objects from the api
   const [currentKanji, setCurrentKanji] = useState(null); // random kanji object from the api
   const kanji = useSelector((state) => state.question.kanji); // current valid kanji object from the store
+  const questionAnswered = useSelector((state) => state.question.answer); // if the question has been answered
 
   const apiKey = useSelector((state) => state.user.apiKey);
 
@@ -78,6 +79,30 @@ function App() {
     }
   };
 
+  /**
+   * Removes the kanji with the given id from the available kanji array
+   */
+  const removeKanji = (id) => {
+    setAvailableKanji((prev) => {
+      const newAvailableKanji = [...prev];
+      newAvailableKanji.splice(
+        newAvailableKanji.findIndex((k) => k.data.subject_id === id),
+        1
+      );
+      return newAvailableKanji;
+    });
+  };
+
+  /**
+   * Resets the question to the next one
+   */
+  const nextQuestion = () => {
+    removeKanji(kanji.id);
+    dispatch(setAnswered(false));
+    dispatch(setCorrect(false));
+    pickRandomKanji();
+  };
+
   // on component mount, check if the user has an api key saved in local storage
   useEffect(() => {
     const key = JSON.parse(localStorage.getItem("apiKey"))?.apiKey;
@@ -92,6 +117,8 @@ function App() {
   useEffect(() => {
     if (currentKanji !== null && currentKanji !== undefined) {
       if (currentKanji.visually_similar_subject_ids.length < 1) {
+        // remove the current kanji from the available kanji
+        removeKanji(currentKanji.id);
         pickRandomKanji();
       } else {
         const defaultMeanings = currentKanji.meanings.map((m) => m.meaning); // default meanings are the ones that are set by wanikani
@@ -113,9 +140,9 @@ function App() {
     }
   }, [currentKanji]);
 
-  useEffect(() => {
-    console.log(kanji);
-  }, [kanji]);
+  // useEffect(() => {
+  //   console.log(kanji);
+  // }, [kanji]);
 
   // study by level
   // study by srs stage ?
@@ -134,6 +161,7 @@ function App() {
       ) : (
         <Question />
       )}
+      <button onClick={() => nextQuestion()}>next</button>
     </div>
   );
 }

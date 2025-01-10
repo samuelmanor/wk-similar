@@ -12,18 +12,16 @@ export const Question: FC<QuestionProps> = () => {
     (state: { question: { kanji: kanji } }) => state.question.kanji
   );
 
+  /**
+   * Generates question options from selected kanji's similar kanji, and selected kanji
+   */
   const pickOptions = () => {
-    let arr = kanji.similarIds.map((k) => k); // copy array
+    let arr = [...kanji.similarIds]; // copy array
 
     // if more than 3 similar kanji, pick 3 random ones
     if (arr.length > 3) {
-      let pickedIds: number[] = []; // array to hold picked ids
-      // pick 3 random ids
-      for (let i = 0; i < 3; i++) {
-        let randomIndex = Math.floor(Math.random() * arr.length);
-        pickedIds.push(arr[randomIndex]);
-        arr.splice(randomIndex, 1);
-      }
+      arr.sort(() => Math.random() - 0.5); // randomize array
+      arr = arr.slice(0, 3); // take first 3 elements
     }
 
     arr.push(kanji.id); // add selected kanji to end of array
@@ -53,7 +51,6 @@ export const Question: FC<QuestionProps> = () => {
           }
         })}
       </h3>
-      {/* <button onClick={() => pickOptions()}>test</button> */}
       <div>
         {optionIds.map((id: number) => (
           <Option key={id} id={id} />

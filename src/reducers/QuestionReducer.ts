@@ -29,6 +29,8 @@ const questionSlice = createSlice({
       meanings: [] as string[],
       similarIds: [] as number[],
     },
+    answered: false,
+    correct: null,
   },
   reducers: {
     setKanji: (state, action) => {
@@ -39,10 +41,16 @@ const questionSlice = createSlice({
       state.kanji.meanings = action.payload.meanings;
       state.kanji.similarIds = action.payload.similarIds;
     },
+    setAnswered: (state, action) => {
+      state.answered = action.payload;
+    },
+    setCorrect: (state, action) => {
+      state.correct = action.payload;
+    },
   },
 });
 
-export const { setKanji } = questionSlice.actions;
+export const { setKanji, setAnswered, setCorrect } = questionSlice.actions;
 
 export default questionSlice.reducer;
 // holds selected kanji, possible answers, answer, etc
