@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { Welcome } from "./components/Welcome";
 import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
+import { setKanji } from "./reducers/QuestionReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [availableKanji, setAvailableKanji] = useState(0);
-  const [currentKanji, setCurrentKanji] = useState(null);
+  const [currentKanji, setCurrentKanji] = useState(null); // random kanji object from the api
+  const kanji = useSelector((state) => state.question.kanji);
 
   const apiKey = useSelector((state) => state.user.apiKey);
 
@@ -86,15 +88,31 @@ function App() {
 
   // if the current kanji has less than 2 visually similar kanji, pick a new one
   useEffect(() => {
-    if (
-      currentKanji !== null &&
-      currentKanji !== undefined &&
-      currentKanji.visually_similar_subject_ids.length < 2
-    ) {
-      // console.log(currentKanji);
-      pickRandomKanji();
+    if (currentKanji !== null && currentKanji !== undefined) {
+      if (currentKanji.visually_similar_subject_ids.length < 2) {
+        pickRandomKanji();
+      } else {
+        const defaultMeanings = currentKanji.meanings.map((m) => m.meaning); // default meanings are the ones that are set by wanikani
+        const userMeanings = currentKanji.auxiliary_meanings.map(
+          (m) => m.meaning
+        ); // users can add their own meanings to kanji in wanikani
+
+        dispatch(
+          setKanji({
+            character: currentKanji.characters,
+            url: currentKanji.document_url,
+            level: currentKanji.level,
+            meanings: [...defaultMeanings, ...userMeanings],
+            similarIds: currentKanji.visually_similar_subject_ids,
+          })
+        );
+      }
     }
   }, [currentKanji]);
+
+  useEffect(() => {
+    console.log(kanji);
+  }, [kanji]);
 
   // study by level
   // study by srs stage ?
