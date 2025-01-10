@@ -13,22 +13,25 @@ export const Question: FC<QuestionProps> = () => {
   );
 
   const pickOptions = () => {
-    // if more than 4 similar kanji, pick 4 random ones
-    if (kanji.similarIds.length > 4) {
-      let arr: number[] = kanji.similarIds.map((k) => k); // copy array
-      let pickedIds: number[] = []; // array to hold picked ids
+    let arr = kanji.similarIds.map((k) => k); // copy array
 
-      // pick 4 random ids
-      for (let i = 0; i < 4; i++) {
+    // if more than 3 similar kanji, pick 3 random ones
+    if (arr.length > 3) {
+      let pickedIds: number[] = []; // array to hold picked ids
+      // pick 3 random ids
+      for (let i = 0; i < 3; i++) {
         let randomIndex = Math.floor(Math.random() * arr.length);
         pickedIds.push(arr[randomIndex]);
         arr.splice(randomIndex, 1);
       }
-
-      setOptionIds(pickedIds);
-    } else {
-      setOptionIds(kanji.similarIds);
     }
+
+    arr.push(kanji.id); // add selected kanji to end of array
+
+    // randomize array
+    arr = arr.sort(() => Math.random() - 0.5);
+
+    setOptionIds(arr);
   };
 
   useEffect(() => {

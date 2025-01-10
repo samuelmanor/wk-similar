@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 /**
  * @interface kanji
+ *  @property {number} id - selected kanji's id
  * @property {string} character - selected kanji character
  * @property {string} url - link to kanji's page on wanikani
  * @property {number} level - level where kanji is introduced
@@ -9,6 +10,7 @@ import { createSlice } from "@reduxjs/toolkit";
  * @property {number[]} similarIds - array of similar kanji's ids
  */
 export interface kanji {
+  id: number;
   character: string;
   url: string;
   level: number;
@@ -20,7 +22,8 @@ const questionSlice = createSlice({
   name: "question",
   initialState: {
     kanji: {
-      character: "", // selected kanji character
+      id: 0,
+      character: "",
       url: "",
       level: 0,
       meanings: [] as string[],
@@ -29,6 +32,7 @@ const questionSlice = createSlice({
   },
   reducers: {
     setKanji: (state, action) => {
+      state.kanji.id = action.payload.id;
       state.kanji.character = action.payload.character;
       state.kanji.url = action.payload.url;
       state.kanji.level = action.payload.level;

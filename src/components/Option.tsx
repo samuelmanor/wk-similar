@@ -10,6 +10,7 @@ interface OptionProps {
 
 export const Option: FC<OptionProps> = ({ id }) => {
   const [kanji, setKanji] = useState<kanji>({
+    id: 0,
     character: "",
     url: "",
     level: 0,
@@ -27,6 +28,7 @@ export const Option: FC<OptionProps> = ({ id }) => {
       })
       .then((res) => {
         setKanji({
+          id: res.data.data.id,
           character: res.data.data.characters,
           url: res.data.data.document_url,
           level: res.data.data.level,

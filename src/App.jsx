@@ -57,7 +57,7 @@ function App() {
       .then((res) => {
         // console.log("fetchkanji", res.data);
         // console.log(res.data.data.visually_similar_subject_ids);
-        setCurrentKanji(res.data.data);
+        setCurrentKanji({ ...res.data.data, id: res.data.id });
       })
       .catch((err) => {
         console.log(err);
@@ -101,6 +101,7 @@ function App() {
 
         dispatch(
           setKanji({
+            id: currentKanji.id,
             character: currentKanji.characters,
             url: currentKanji.document_url,
             level: currentKanji.level,
@@ -124,7 +125,7 @@ function App() {
     <div className="App">
       {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
       <button onClick={() => getAvailableKanji()}>study</button>
-      {/* <button onClick={() => console.log(currentKanji)}>current</button> */}
+      <button onClick={() => console.log(currentKanji)}>current</button>
       <br />
       {kanji.character.length === 0 ? (
         <p style={{ display: currentKanji !== null ? "" : "none" }}>
