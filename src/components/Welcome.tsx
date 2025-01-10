@@ -31,14 +31,14 @@ export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log("yes", res.data);
+          console.log("valid api key", res.data);
           dispatch(setApiKey(key));
           localStorage.setItem("apiKey", JSON.stringify({ apiKey: key }));
           hide();
         }
       })
       .catch((err) => {
-        console.log("no", err);
+        console.log("invalid api key", err);
         handleError();
       });
   };
