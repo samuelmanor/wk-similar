@@ -2,6 +2,7 @@ import "./App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Welcome } from "./components/Welcome";
+import { Question } from "./components/Question";
 import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
 import { setKanji } from "./reducers/QuestionReducer";
@@ -123,7 +124,15 @@ function App() {
     <div className="App">
       {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
       <button onClick={() => getAvailableKanji()}>study</button>
-      <button onClick={() => console.log(currentKanji)}>current</button>
+      {/* <button onClick={() => console.log(currentKanji)}>current</button> */}
+      <br />
+      {kanji.character.length === 0 ? (
+        <p style={{ display: currentKanji !== null ? "" : "none" }}>
+          loading...
+        </p>
+      ) : (
+        <Question />
+      )}
     </div>
   );
 }
