@@ -91,7 +91,7 @@ function App() {
   // if the current kanji has less than 2 visually similar kanji, pick a new one
   useEffect(() => {
     if (currentKanji !== null && currentKanji !== undefined) {
-      if (currentKanji.visually_similar_subject_ids.length < 2) {
+      if (currentKanji.visually_similar_subject_ids.length < 1) {
         pickRandomKanji();
       } else {
         const defaultMeanings = currentKanji.meanings.map((m) => m.meaning); // default meanings are the ones that are set by wanikani
