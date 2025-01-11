@@ -97,12 +97,18 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
     //   data-tip="hello"
     // >
     <button
-      // className="btn w-52 h-52 text-paper"
-      className="btn phone:w-40 phone:h-40 w-52 h-52 hover:drop-shadow-lg"
+      className="btn phone:w-36 phone:h-36 w-52 h-52 hover:drop-shadow-lg"
       onClick={handleClick}
       style={{ backgroundColor: bgColor() }}
       disabled={questionAnswered}
     >
+      {/* <kbd
+        className={`kbd ${
+          questionAnswered ? "hidden" : ""
+        } bg-purple font-body text-paper`} // todo: keyboard shortcuts for selecting options
+      >
+        a
+      </kbd> */}
       <h1
         className="phone:text-8xl text-9xl text-paper drop-shadow font-mono"
         style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}

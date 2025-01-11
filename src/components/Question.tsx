@@ -43,47 +43,29 @@ export const Question: FC<QuestionProps> = () => {
   }, [kanji]);
 
   return (
-    <div>
-      {!questionAnswered ? (
-        <div>
-          <h2>select the kanji that means</h2>
-          <h1>{kanji.meanings[0]}</h1>
-          <h3>
-            {kanji.meanings.map((meaning: string, i: number) => {
-              if (i === 0) {
-                return null;
-              } else if (i === kanji.meanings.length - 1) {
-                return meaning;
-              } else {
-                return meaning + ", ";
-              }
-            })}
-          </h3>
-        </div>
-      ) : (
-        <div onClick={() => console.log(kanji.id)}>
-          {questionCorrect ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M23 20.168l-8.185-8.187 8.185-8.174-2.832-2.807-8.182 8.179-8.176-8.179-2.81 2.81 8.186 8.196-8.186 8.184 2.81 2.81 8.203-8.192 8.18 8.192z" />
-            </svg>
-          )}
-        </div>
-      )}
-      <div className="border border-black flex flex-row justify-center">
+    <div className={`${kanji.id === 0 ? "hidden" : ""}`}>
+      <div className="flex flex-col justify-center items-center">
+        <h2
+          className={`phone:text-1xl select-none font-body text-${
+            questionAnswered ? "background" : "text"
+          }`}
+        >
+          select the kanji that means
+        </h2>
+        <h1 className="phone:text-4xl font-body">{kanji.meanings[0]}</h1>
+        <h3 className="phone:text-2xl font-body">
+          {kanji.meanings.map((meaning: string, i: number) => {
+            if (i === 0) {
+              return null;
+            } else if (i === kanji.meanings.length - 1) {
+              return meaning;
+            } else {
+              return meaning + ", ";
+            }
+          })}
+        </h3>
+      </div>
+      <div className="border border-black grid phone:grid-cols-1 laptop:grid-cols-2 gap-4">
         {optionIds.map((id: number, i: number) => (
           <div className="w-52" key={`option-${id}`}>
             <Option key={id} id={id} index={i} />

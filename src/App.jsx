@@ -9,10 +9,11 @@ import { setKanji, setAnswered, setCorrect } from "./reducers/QuestionReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
+  const [gameInitialized, setGameInitialized] = useState(false);
   const [availableKanji, setAvailableKanji] = useState(0); // list of kanji objects from the api
   const [currentKanji, setCurrentKanji] = useState(null); // random kanji object from the api
   const kanji = useSelector((state) => state.question.kanji); // current valid kanji object from the store
-  const questionAnswered = useSelector((state) => state.question.answer); // if the question has been answered
+  const questionAnswered = useSelector((state) => state.question.answered); // if the question has been answered
 
   const apiKey = useSelector((state) => state.user.apiKey);
 
@@ -106,6 +107,11 @@ function App() {
     pickRandomKanji();
   };
 
+  const startGame = () => {
+    setGameInitialized(true);
+    getAvailableKanji();
+  };
+
   // on component mount, check if the user has an api key saved in local storage
   useEffect(() => {
     const key = JSON.parse(localStorage.getItem("apiKey"))?.apiKey;
@@ -146,14 +152,31 @@ function App() {
   // study by srs stage ?
   //                    -- study by random --
 
+  if (showWelcome) {
+    return <Welcome hide={() => setShowWelcome(false)} />;
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-      {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
-      <button onClick={() => getAvailableKanji()}>study</button>
-      <button onClick={() => console.log(currentKanji)}>current</button>
-      <br />
-      <Question />
-      <button onClick={() => nextQuestion()}>next</button>
+    <div className="bg-background min-h-screen flex flex-col justify-between">
+      {/* {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null} */}
+      {!gameInitialized ? (
+        <button onClick={startGame}>study</button>
+      ) : (
+        <Question />
+      )}
+      {questionAnswered ? (
+        <button onClick={() => nextQuestion()}>next</button>
+      ) : null}
+
+      {/* <button onClick={() => console.log(currentKanji)}>current</button>
+      <br /> */}
+      {/* {kanji.character.length === 0 ? (
+        <p style={{ display: currentKanji !== null ? "" : "none" }}>
+          loading...
+        </p>
+      ) : (
+        <Question />
+      )} */}
     </div>
   );
 }
