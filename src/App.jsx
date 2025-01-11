@@ -97,9 +97,12 @@ function App() {
    * Resets the question to the next one
    */
   const nextQuestion = () => {
-    removeKanji(kanji.id);
-    dispatch(setAnswered(false));
-    dispatch(setCorrect(false));
+    // pickRandomKanji();
+    setTimeout(() => {
+      removeKanji(kanji.id);
+      dispatch(setAnswered(false));
+      dispatch(setCorrect(false));
+    }, 200);
     pickRandomKanji();
   };
 
@@ -144,18 +147,12 @@ function App() {
   //                    -- study by random --
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center w-full h-full">
       {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
       <button onClick={() => getAvailableKanji()}>study</button>
       <button onClick={() => console.log(currentKanji)}>current</button>
       <br />
-      {kanji.character.length === 0 ? (
-        <p style={{ display: currentKanji !== null ? "" : "none" }}>
-          loading...
-        </p>
-      ) : (
-        <Question />
-      )}
+      <Question />
       <button onClick={() => nextQuestion()}>next</button>
     </div>
   );
