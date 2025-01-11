@@ -66,25 +66,37 @@ export const Option: FC<OptionProps> = ({ id }) => {
     if (questionAnswered) {
       if (questionCorrect) {
         if (id === answer) {
-          return "green";
+          return "#88cc00";
         } else {
           return "gray";
         }
       } else {
         if (id === answer) {
-          return "green";
+          return "#88cc00";
         } else if (selected) {
-          return "red";
+          return "#ff0033";
         } else {
           return "gray";
         }
       }
+    } else {
+      return "#aa00ff";
     }
   };
 
   return (
-    <div onClick={handleClick} style={{ backgroundColor: bgColor() }}>
-      <h1>{kanji.character}</h1>
-    </div>
+    <button
+      // className="btn w-52 h-52 text-paper"
+      className="btn w-52 h-52"
+      onClick={handleClick}
+      style={{ backgroundColor: bgColor() }}
+    >
+      <h1
+        className="text-9xl text-paper drop-shadow font-mono"
+        style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
+      >
+        {kanji.character}
+      </h1>
+    </button>
   );
 };

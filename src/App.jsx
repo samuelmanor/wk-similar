@@ -149,7 +149,7 @@ function App() {
   //                    -- study by random --
 
   return (
-    <div className="App">
+    <div>
       {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null}
       <button onClick={() => getAvailableKanji()}>study</button>
       <button onClick={() => console.log(currentKanji)}>current</button>

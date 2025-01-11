@@ -53,7 +53,9 @@ export const Question: FC<QuestionProps> = () => {
       </h3>
       <div>
         {optionIds.map((id: number) => (
-          <Option key={id} id={id} />
+          <div className="w-52" key={`option-${id}`}>
+            <Option key={id} id={id} />
+          </div>
         ))}
       </div>
     </div>
