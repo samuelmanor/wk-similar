@@ -17,6 +17,12 @@ module.exports = {
       body: ["Noto Sans", "sans-serif"],
       mono: ["Noto Sans JP", "sans-serif"],
     },
+    screens: {
+      phone: "320px",
+      tablet: "640px",
+      laptop: "1024px",
+      desktop: "1280px",
+    },
   },
   plugins: [require("daisyui")],
 };

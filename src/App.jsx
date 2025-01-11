@@ -121,18 +121,13 @@ function App() {
         removeKanji(currentKanji.id);
         pickRandomKanji();
       } else {
-        const defaultMeanings = currentKanji.meanings.map((m) => m.meaning); // default meanings are the ones that are set by wanikani
-        const userMeanings = currentKanji.auxiliary_meanings.map(
-          (m) => m.meaning
-        ); // users can add their own meanings to kanji in wanikani
-
         dispatch(
           setKanji({
             id: currentKanji.id,
             character: currentKanji.characters,
             url: currentKanji.document_url,
             level: currentKanji.level,
-            meanings: [...defaultMeanings, ...userMeanings],
+            meanings: currentKanji.meanings.map((m) => m.meaning.toLowerCase()),
             similarIds: currentKanji.visually_similar_subject_ids,
           })
         );

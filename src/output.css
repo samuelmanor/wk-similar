@@ -1283,6 +1283,10 @@ html {
   margin-top: 0px;
 }
 
+.grid {
+  display: grid;
+}
+
 .h-52 {
   height: 13rem;
 }
@@ -1291,17 +1295,28 @@ html {
   width: 13rem;
 }
 
+.w-\[450px\] {
+  width: 450px;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.border {
+  border-width: 1px;
+}
+
 .font-mono {
   font-family: Noto Sans JP, sans-serif;
 }
 
 .text-9xl {
   font-size: 8rem;
-  line-height: 1;
-}
-
-.text-8xl {
-  font-size: 6rem;
   line-height: 1;
 }
 
@@ -1315,8 +1330,44 @@ html {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-/* @layer base {
-  @font-face {
-    font-family: "Noto Sans";
+.hover\:drop-shadow-lg:hover {
+  --tw-drop-shadow: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+@media (min-width: 320px) {
+  .phone\:h-40 {
+    height: 10rem;
   }
-} */
+
+  .phone\:h-44 {
+    height: 11rem;
+  }
+
+  .phone\:w-40 {
+    width: 10rem;
+  }
+
+  .phone\:w-44 {
+    width: 11rem;
+  }
+
+  .phone\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .phone\:text-9xl {
+    font-size: 8rem;
+    line-height: 1;
+  }
+
+  .phone\:text-8xl {
+    font-size: 6rem;
+    line-height: 1;
+  }
+
+  .phone\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+}

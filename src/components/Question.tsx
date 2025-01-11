@@ -51,7 +51,7 @@ export const Question: FC<QuestionProps> = () => {
           }
         })}
       </h3>
-      <div>
+      <div className="grid phone:grid-cols-1 grid-cols-2 gap-4 w-[450px] border border-black">
         {optionIds.map((id: number) => (
           <div className="w-52" key={`option-${id}`}>
             <Option key={id} id={id} />

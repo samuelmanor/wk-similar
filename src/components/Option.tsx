@@ -87,12 +87,12 @@ export const Option: FC<OptionProps> = ({ id }) => {
   return (
     <button
       // className="btn w-52 h-52 text-paper"
-      className="btn w-52 h-52"
+      className="btn phone:w-40 phone:h-40 w-52 h-52 hover:drop-shadow-lg"
       onClick={handleClick}
       style={{ backgroundColor: bgColor() }}
     >
       <h1
-        className="text-9xl text-paper drop-shadow font-mono"
+        className="phone:text-8xl text-9xl text-paper drop-shadow font-mono"
         style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
       >
         {kanji.character}
