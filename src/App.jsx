@@ -160,7 +160,9 @@ function App() {
     <div className="bg-background min-h-screen flex flex-col justify-between">
       {/* {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null} */}
       {!gameInitialized ? (
-        <button onClick={startGame}>study</button>
+        <button onClick={startGame} className="text-text">
+          study
+        </button>
       ) : (
         <Question />
       )}

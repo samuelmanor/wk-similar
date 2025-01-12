@@ -97,7 +97,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
     //   data-tip="hello"
     // >
     <button
-      className="btn phone:w-36 phone:h-36 w-52 h-52 hover:drop-shadow-lg"
+      className="btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none"
       onClick={handleClick}
       style={{ backgroundColor: bgColor() }}
       disabled={questionAnswered}
@@ -110,7 +110,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
         a
       </kbd> */}
       <h1
-        className="phone:text-8xl text-9xl text-paper drop-shadow font-mono"
+        className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
         style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
       >
         {kanji.character}
