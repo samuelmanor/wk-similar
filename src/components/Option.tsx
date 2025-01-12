@@ -4,6 +4,7 @@ import { kanji } from "../reducers/QuestionReducer";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
+import { KanjiInfo } from "./KanjiInfo";
 
 interface OptionProps {
   id: number;
@@ -55,7 +56,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
             character: res.data.data.characters,
             url: res.data.data.document_url,
             level: res.data.data.level,
-            meanings: res.data.data.meanings[0].meaning,
+            meanings: res.data.data.meanings[0].meaning.toLowerCase(),
             similarIds: res.data.data.visually_similar_subject_ids,
           });
         })
@@ -71,7 +72,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
         if (id === answer.id) {
           return "#88cc00";
         } else {
-          return "gray";
+          return "#b2b2b2";
         }
       } else {
         if (id === answer.id) {
@@ -79,7 +80,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
         } else if (selected) {
           return "#ff0033";
         } else {
-          return "gray";
+          return "#b2b2b2";
         }
       }
     } else {
@@ -89,15 +90,13 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
 
   return (
     // <div
-    //   className={`tooltip tablet:tooltip-right laptop:tooltip-${
-    //     index === 0 || index === 2 ? "left" : "right"
-    //   } ${questionAnswered && id === answer.id ? "tooltip-open" : ""} ${
-    //     answer.character.length === 0 ? "hidden" : ""
+    //   data-tip={kanji.meanings}
+    //   className={`tooltip [--tooltip-text-color:red] [--tooltip-color:#b2b2b2] ${
+    //     index % 2 === 0 ? "tooltip-left" : "tooltip-right"
     //   }`}
-    //   data-tip="hello"
     // >
     <button
-      className="btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none"
+      className="btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative"
       onClick={handleClick}
       style={{ backgroundColor: bgColor() }}
       disabled={questionAnswered}
@@ -107,8 +106,9 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
           questionAnswered ? "hidden" : ""
         } bg-purple font-body text-paper`} // todo: keyboard shortcuts for selecting options
       >
-        a
+        {index + 1}
       </kbd> */}
+      <span className="absolute left-2 top-2">{index + 1}</span>
       <h1
         className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
         style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}

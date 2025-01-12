@@ -1342,6 +1342,22 @@ html {
   bottom: var(--tooltip-offset);
 }
 
+.tooltip-left:before {
+  transform: translateY(-50%);
+  top: 50%;
+  left: auto;
+  right: var(--tooltip-offset);
+  bottom: auto;
+}
+
+.tooltip-right:before {
+  transform: translateY(-50%);
+  top: 50%;
+  left: var(--tooltip-offset);
+  right: auto;
+  bottom: auto;
+}
+
 .join.join-vertical > :where(*:not(:first-child)):is(.btn) {
   margin-top: calc(var(--border-btn) * -1);
 }
@@ -1438,6 +1454,84 @@ html {
   bottom: var(--tooltip-tail-offset);
 }
 
+.tooltip-left:after {
+  transform: translateY(-50%);
+  border-color: transparent transparent transparent var(--tooltip-color);
+  top: 50%;
+  left: auto;
+  right: calc(var(--tooltip-tail-offset) + 0.0625rem);
+  bottom: auto;
+}
+
+.tooltip-right:after {
+  transform: translateY(-50%);
+  border-color: transparent var(--tooltip-color) transparent transparent;
+  top: 50%;
+  left: calc(var(--tooltip-tail-offset) + 0.0625rem);
+  right: auto;
+  bottom: auto;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+.inset-0 {
+  inset: 0px;
+}
+
+.inset-8 {
+  inset: 2rem;
+}
+
+.left-1 {
+  left: 0.25rem;
+}
+
+.left-0 {
+  left: 0px;
+}
+
+.bottom-1 {
+  bottom: 0.25rem;
+}
+
+.bottom-10 {
+  bottom: 2.5rem;
+}
+
+.bottom-2 {
+  bottom: 0.5rem;
+}
+
+.bottom-0 {
+  bottom: 0px;
+}
+
+.top-0 {
+  top: 0px;
+}
+
+.left-5 {
+  left: 1.25rem;
+}
+
+.left-2 {
+  left: 0.5rem;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1448,8 +1542,8 @@ html {
   margin-bottom: 1rem;
 }
 
-.block {
-  display: block;
+.inline-block {
+  display: inline-block;
 }
 
 .flex {
@@ -1524,6 +1618,11 @@ html {
   background-color: rgb(170 0 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-text {
+  --tw-bg-opacity: 1;
+  background-color: rgb(51 51 51 / var(--tw-bg-opacity, 1));
+}
+
 .font-body {
   font-family: Noto Sans, sans-serif;
 }
@@ -1547,8 +1646,9 @@ html {
   color: rgb(51 51 51 / var(--tw-text-opacity, 1));
 }
 
-.text-transparent {
-  color: transparent;
+.text-red {
+  --tw-text-opacity: 1;
+  color: rgb(255 0 51 / var(--tw-text-opacity, 1));
 }
 
 .drop-shadow {
@@ -1556,23 +1656,36 @@ html {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-@media (min-width: 640px) {
-  .tablet\:tooltip-right:before {
-    transform: translateY(-50%);
-    top: 50%;
-    left: var(--tooltip-offset);
-    right: auto;
-    bottom: auto;
-  }
+.\[--tooltip-color\:\#b2b2b2\] {
+  --tooltip-color: #b2b2b2;
+}
 
-  .tablet\:tooltip-right:after {
-    transform: translateY(-50%);
-    border-color: transparent var(--tooltip-color) transparent transparent;
-    top: 50%;
-    left: calc(var(--tooltip-tail-offset) + 0.0625rem);
-    right: auto;
-    bottom: auto;
-  }
+.\[--tooltip-color\:\#c5c5c5\] {
+  --tooltip-color: #c5c5c5;
+}
+
+.\[--tooltip-color\:\#g5g5g5\] {
+  --tooltip-color: #g5g5g5;
+}
+
+.\[--tooltip-color\:\#hhhhhh\] {
+  --tooltip-color: #hhhhhh;
+}
+
+.\[--tooltip-color\:green\] {
+  --tooltip-color: green;
+}
+
+.\[--tooltip-color\:purple\] {
+  --tooltip-color: purple;
+}
+
+.\[--tooltip-color\:red\] {
+  --tooltip-color: red;
+}
+
+.\[--tooltip-text-color\:red\] {
+  --tooltip-text-color: red;
 }
 
 .hover\:drop-shadow-lg:hover {
@@ -1614,16 +1727,8 @@ html {
 }
 
 @media (min-width: 640px) {
-  .tablet\:h-40 {
-    height: 10rem;
-  }
-
   .tablet\:h-48 {
     height: 12rem;
-  }
-
-  .tablet\:w-40 {
-    width: 10rem;
   }
 
   .tablet\:w-48 {
@@ -1638,16 +1743,6 @@ html {
     gap: 2rem;
   }
 
-  .tablet\:text-9xl {
-    font-size: 8rem;
-    line-height: 1;
-  }
-
-  .tablet\:text-2xl {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
-
   .tablet\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
@@ -1655,6 +1750,11 @@ html {
 
   .tablet\:text-6xl {
     font-size: 3.75rem;
+    line-height: 1;
+  }
+
+  .tablet\:text-9xl {
+    font-size: 8rem;
     line-height: 1;
   }
 }
@@ -1666,10 +1766,5 @@ html {
 
   .laptop\:w-52 {
     width: 13rem;
-  }
-
-  .laptop\:text-9xl {
-    font-size: 8rem;
-    line-height: 1;
   }
 }
