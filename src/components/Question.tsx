@@ -73,3 +73,15 @@ export const Question: FC<QuestionProps> = () => {
     </div>
   );
 };
+
+{
+  /* <button
+onClick={() => nextQuestion()}
+className={`phone:text-8xl tablet:text-9xl w-fit mx-auto ${
+  questionAnswered ? "text-text" : "text-background"
+}`}
+disabled={!questionAnswered}
+>
+→
+</button> */
+}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Welcome } from "./components/Welcome";
 import { Question } from "./components/Question";
+import { ModeSelect } from "./components/ModeSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
 import { setKanji, setAnswered, setCorrect } from "./reducers/QuestionReducer";
@@ -148,10 +149,6 @@ function App() {
   //   console.log(kanji);
   // }, [kanji]);
 
-  // study by level
-  // study by srs stage ?
-  //                    -- study by random --
-
   if (showWelcome) {
     return <Welcome hide={() => setShowWelcome(false)} />;
   }
@@ -159,13 +156,14 @@ function App() {
   return (
     <div className="bg-background min-h-screen flex flex-col justify-center">
       {!gameInitialized ? (
-        <button onClick={startGame} className="text-text">
-          study
-        </button>
+        // <button onClick={startGame} className="text-text">
+        //   study
+        // </button>
+        <ModeSelect />
       ) : (
         <Question />
       )}
-      <button
+      {/* <button
         onClick={() => nextQuestion()}
         className={`phone:text-8xl tablet:text-9xl w-fit mx-auto ${
           questionAnswered ? "text-text" : "text-background"
@@ -173,7 +171,7 @@ function App() {
         disabled={!questionAnswered}
       >
         →
-      </button>
+      </button> */}
 
       {/* <button onClick={() => console.log(currentKanji)}>current</button>
       <br /> */}

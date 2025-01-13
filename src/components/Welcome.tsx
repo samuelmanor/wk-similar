@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
-import { setApiKey } from "../reducers/UserReducer";
+import { setApiKey, setLevel } from "../reducers/UserReducer";
 import { LuClipboardPaste } from "react-icons/lu";
 import { IconContext } from "react-icons";
 
@@ -41,6 +41,7 @@ export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
           console.log("valid api key", res.data);
           dispatch(setApiKey(key));
           localStorage.setItem("apiKey", JSON.stringify({ apiKey: key }));
+          dispatch(setLevel(res.data.data.level));
           hide();
         }
       })
