@@ -4,7 +4,6 @@ import { kanji } from "../reducers/QuestionReducer";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
-import { KanjiInfo } from "./KanjiInfo";
 
 interface OptionProps {
   id: number;
@@ -89,22 +88,34 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
   };
 
   return (
-    <div className={"w-fit mx-auto border border-red"}>
-      <button
-        className={`btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative cursor-${
-          questionAnswered ? "default" : "pointer"
-        }`}
-        onClick={handleClick}
-        style={{ backgroundColor: bgColor() }}
-        disabled={questionAnswered}
+    <div className={"w-fit mx-auto"}>
+      <div
+        className={`tooltip font-body ${
+          questionAnswered && id !== answer.id
+            ? "[--tooltip-color:#b2b2b2] [--tooltip-text-color:text]"
+            : "[--tooltip-color:transparent] [--tooltip-text-color:transparent]"
+        }
+        phone:tooltip-right
+        ${index % 2 === 0 ? "tablet:tooltip-left" : "tablet:tooltip-right"}
+        `}
+        data-tip={kanji.meanings}
       >
-        <h1
-          className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
-          style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
+        <button
+          className={`btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative cursor-${
+            questionAnswered ? "default" : "pointer"
+          }`}
+          onClick={handleClick}
+          style={{ backgroundColor: bgColor() }}
+          disabled={questionAnswered}
         >
-          {kanji.character}
-        </h1>
-      </button>
+          <h1
+            className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
+            style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
+          >
+            {kanji.character}
+          </h1>
+        </button>
+      </div>
     </div>
   );
 };

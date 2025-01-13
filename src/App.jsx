@@ -157,7 +157,7 @@ function App() {
   }
 
   return (
-    <div className="bg-background min-h-screen flex flex-col justify-between">
+    <div className="bg-background min-h-screen flex flex-col justify-center">
       {!gameInitialized ? (
         <button onClick={startGame} className="text-text">
           study
@@ -165,9 +165,15 @@ function App() {
       ) : (
         <Question />
       )}
-      {questionAnswered ? (
-        <button onClick={() => nextQuestion()}>next</button>
-      ) : null}
+      <button
+        onClick={() => nextQuestion()}
+        className={`phone:text-8xl tablet:text-9xl ${
+          questionAnswered ? "text-text" : "text-background"
+        }`}
+        disabled={!questionAnswered}
+      >
+        →
+      </button>
 
       {/* <button onClick={() => console.log(currentKanji)}>current</button>
       <br /> */}

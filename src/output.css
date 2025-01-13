@@ -1498,6 +1498,14 @@ html {
   margin-top: 1.25rem;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .inline-block {
   display: inline-block;
 }
@@ -1595,6 +1603,11 @@ html {
   line-height: 2.5rem;
 }
 
+.text-8xl {
+  font-size: 6rem;
+  line-height: 1;
+}
+
 .text-paper {
   --tw-text-opacity: 1;
   color: rgb(244 244 244 / var(--tw-text-opacity, 1));
@@ -1603,6 +1616,16 @@ html {
 .text-text {
   --tw-text-opacity: 1;
   color: rgb(51 51 51 / var(--tw-text-opacity, 1));
+}
+
+.text-red {
+  --tw-text-opacity: 1;
+  color: rgb(255 0 51 / var(--tw-text-opacity, 1));
+}
+
+.text-background {
+  --tw-text-opacity: 1;
+  color: rgb(237 237 237 / var(--tw-text-opacity, 1));
 }
 
 .drop-shadow {
@@ -1614,8 +1637,79 @@ html {
   --tooltip-color: #b2b2b2;
 }
 
+.\[--tooltip-color\:gray\] {
+  --tooltip-color: gray;
+}
+
+.\[--tooltip-color\:red\] {
+  --tooltip-color: red;
+}
+
+.\[--tooltip-color\:transparent\] {
+  --tooltip-color: transparent;
+}
+
 .\[--tooltip-text-color\:text\] {
   --tooltip-text-color: text;
+}
+
+.\[--tooltip-text-color\:transparent\] {
+  --tooltip-text-color: transparent;
+}
+
+@media (min-width: 320px) {
+  .phone\:tooltip-right:before {
+    transform: translateY(-50%);
+    top: 50%;
+    left: var(--tooltip-offset);
+    right: auto;
+    bottom: auto;
+  }
+
+  .phone\:tooltip-right:after {
+    transform: translateY(-50%);
+    border-color: transparent var(--tooltip-color) transparent transparent;
+    top: 50%;
+    left: calc(var(--tooltip-tail-offset) + 0.0625rem);
+    right: auto;
+    bottom: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .tablet\:tooltip-left:before {
+    transform: translateY(-50%);
+    top: 50%;
+    left: auto;
+    right: var(--tooltip-offset);
+    bottom: auto;
+  }
+
+  .tablet\:tooltip-right:before {
+    transform: translateY(-50%);
+    top: 50%;
+    left: var(--tooltip-offset);
+    right: auto;
+    bottom: auto;
+  }
+
+  .tablet\:tooltip-left:after {
+    transform: translateY(-50%);
+    border-color: transparent transparent transparent var(--tooltip-color);
+    top: 50%;
+    left: auto;
+    right: calc(var(--tooltip-tail-offset) + 0.0625rem);
+    bottom: auto;
+  }
+
+  .tablet\:tooltip-right:after {
+    transform: translateY(-50%);
+    border-color: transparent var(--tooltip-color) transparent transparent;
+    top: 50%;
+    left: calc(var(--tooltip-tail-offset) + 0.0625rem);
+    right: auto;
+    bottom: auto;
+  }
 }
 
 .hover\:drop-shadow-lg:hover {
@@ -1676,6 +1770,11 @@ html {
     font-size: 8rem;
     line-height: 1;
   }
+
+  .phone\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
 }
 
 @media (min-width: 640px) {
@@ -1718,5 +1817,10 @@ html {
 
   .laptop\:w-52 {
     width: 13rem;
+  }
+
+  .laptop\:text-9xl {
+    font-size: 8rem;
+    line-height: 1;
   }
 }

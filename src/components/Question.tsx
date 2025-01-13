@@ -45,10 +45,10 @@ export const Question: FC<QuestionProps> = () => {
   return (
     <div className={`${kanji.id === 0 ? "hidden" : ""} mt-5`}>
       <div className="flex flex-col justify-center items-center">
-        <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text">
+        <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text mb-2">
           select the kanji that means
         </h2>
-        <h1 className="phone:text-5xl tablet:text-6xl font-body text-text">
+        <h1 className="phone:text-5xl tablet:text-6xl font-body text-text mb-1">
           {kanji.meanings[0]}
         </h1>
         <h3 className="phone:text-2xl tablet: text-4xl font-body text-text">
@@ -63,7 +63,7 @@ export const Question: FC<QuestionProps> = () => {
           })}
         </h3>
       </div>
-      <div className="grid phone:grid-cols-1 tablet:grid-cols-2 phone:gap-4 tablet:gap-8 w-fit mx-auto my-4 border border-red">
+      <div className="grid phone:grid-cols-1 tablet:grid-cols-2 phone:gap-4 tablet:gap-8 w-fit mx-auto my-4">
         {optionIds.map((id: number, i: number) => (
           <div className="w-52" key={`option-${id}`}>
             <Option key={id} id={id} index={i} />
