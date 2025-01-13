@@ -89,33 +89,22 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
   };
 
   return (
-    // <div
-    //   data-tip={kanji.meanings}
-    //   className={`tooltip [--tooltip-text-color:red] [--tooltip-color:#b2b2b2] ${
-    //     index % 2 === 0 ? "tooltip-left" : "tooltip-right"
-    //   }`}
-    // >
-    <button
-      className="btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative"
-      onClick={handleClick}
-      style={{ backgroundColor: bgColor() }}
-      disabled={questionAnswered}
-    >
-      {/* <kbd
-        className={`kbd ${
-          questionAnswered ? "hidden" : ""
-        } bg-purple font-body text-paper`} // todo: keyboard shortcuts for selecting options
+    <div className={"w-fit mx-auto border border-red"}>
+      <button
+        className={`btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative cursor-${
+          questionAnswered ? "default" : "pointer"
+        }`}
+        onClick={handleClick}
+        style={{ backgroundColor: bgColor() }}
+        disabled={questionAnswered}
       >
-        {index + 1}
-      </kbd> */}
-      <span className="absolute left-2 top-2">{index + 1}</span>
-      <h1
-        className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
-        style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
-      >
-        {kanji.character}
-      </h1>
-    </button>
-    // </div>
+        <h1
+          className="phone:text-8xl tablet:text-9xl text-paper drop-shadow font-mono"
+          style={{ textShadow: "0 5px 0 rgba(0, 0, 0, 0.25)" }}
+        >
+          {kanji.character}
+        </h1>
+      </button>
+    </div>
   );
 };

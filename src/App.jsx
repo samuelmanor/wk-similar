@@ -158,7 +158,6 @@ function App() {
 
   return (
     <div className="bg-background min-h-screen flex flex-col justify-between">
-      {/* {showWelcome ? <Welcome hide={() => setShowWelcome(false)} /> : null} */}
       {!gameInitialized ? (
         <button onClick={startGame} className="text-text">
           study
