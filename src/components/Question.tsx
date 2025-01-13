@@ -48,10 +48,10 @@ export const Question: FC<QuestionProps> = () => {
         <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text mb-2">
           select the kanji that means
         </h2>
-        <h1 className="phone:text-5xl tablet:text-6xl font-body text-text mb-1">
+        <h1 className="phone:text-5xl tablet:text-6xl font-body text-text mb-1 lowercase">
           {kanji.meanings[0]}
         </h1>
-        <h3 className="phone:text-2xl tablet: text-4xl font-body text-text">
+        <h3 className="phone:text-2xl tablet: text-4xl font-body text-text lowercase">
           {kanji.meanings.map((meaning: string, i: number) => {
             if (i === 0) {
               return null;

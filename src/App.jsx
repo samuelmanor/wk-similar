@@ -136,7 +136,7 @@ function App() {
             character: currentKanji.characters,
             url: currentKanji.document_url,
             level: currentKanji.level,
-            meanings: currentKanji.meanings.map((m) => m.meaning.toLowerCase()),
+            meanings: currentKanji.meanings.map((m) => m.meaning),
             similarIds: currentKanji.visually_similar_subject_ids,
           })
         );
@@ -167,7 +167,7 @@ function App() {
       )}
       <button
         onClick={() => nextQuestion()}
-        className={`phone:text-8xl tablet:text-9xl ${
+        className={`phone:text-8xl tablet:text-9xl w-fit mx-auto ${
           questionAnswered ? "text-text" : "text-background"
         }`}
         disabled={!questionAnswered}
