@@ -39,10 +39,10 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
 
   return (
     <div className="bg-background w-full h-screen flex justify-center items-center flex-col">
-      <div className="w-1/3 mx-auto flex flex-col gap-3">
+      <div className="w-1/3 mx-auto flex flex-col gap-10">
         <div className="collapse">
           <input type="radio" name="mode-select" />
-          <div className="collapse-title bg-pink text-paper">
+          <div className="collapse-title bg-pink text-paper cursor-pointer">
             <p className="text-2xl font-bold text-center pl-6">
               study by level
             </p>
@@ -59,7 +59,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(parseInt(e.target.value))}
                 id="level-range"
-                className="w-52"
+                className="w-52 range"
               />
               <p className="w-5">{selectedLevel}</p>
             </div>
@@ -68,7 +68,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
         </div>
         <div className="collapse">
           <input type="radio" name="mode-select" />
-          <div className="collapse-title bg-pink text-paper">
+          <div className="collapse-title bg-pink text-paper cursor-pointer">
             <p className="text-2xl font-bold text-center pl-6">
               study by srs stage
             </p>
@@ -79,7 +79,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
         </div>
         <div className="collapse">
           <input type="radio" name="mode-select" />
-          <div className="collapse-title bg-pink text-paper">
+          <div className="collapse-title bg-pink text-paper cursor-pointer">
             <p className="text-2xl font-bold text-center pl-6">study random</p>
           </div>
           <div className="collapse-content bg-paper text-text">content 3</div>
