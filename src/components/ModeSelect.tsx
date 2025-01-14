@@ -12,31 +12,31 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
   const [selectedSrs, setSelectedSrs] = useState([
     {
       name: "apprentice",
-      color: "pink",
+      color: "#ff00aa",
       selected: false,
       id: 5,
     },
     {
       name: "guru",
-      color: "purple",
+      color: "#aa00ff",
       selected: false,
       id: 6,
     },
     {
       name: "master",
-      color: "[#304ed1]",
+      color: "#304ed1",
       selected: false,
       id: 7,
     },
     {
       name: "enlightened",
-      color: "blue",
+      color: "#00aaff",
       selected: false,
       id: 8,
     },
     {
       name: "burned",
-      color: "text",
+      color: "#333333",
       selected: false,
       id: 9,
     },
@@ -135,7 +135,8 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               {selectedSrs.map((srs, i) => (
                 <label
                   key={i}
-                  className={`label cursor-pointer bg-${srs.color} rounded p-3`}
+                  className={`label cursor-pointe rounded p-3 border`}
+                  style={{ backgroundColor: srs.color }}
                 >
                   <input
                     type="checkbox"
@@ -146,7 +147,6 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
                       newSrs[i].selected = e.target.checked;
                       setSelectedSrs(newSrs);
                     }}
-                    onClick={() => console.log(srs)}
                   />
                   <span className="label-text pl-2 w-36 text-paper">
                     {srs.name}

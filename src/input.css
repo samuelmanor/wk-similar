@@ -8,15 +8,15 @@
 
 .checkbox:checked {
   background-color: #f4f4f4;
-  background-image: linear-gradient(-45deg, transparent 65%, white 65.99%),
-    linear-gradient(45deg, transparent 75%, white 75.99%),
-    linear-gradient(-45deg, white 40%, transparent 40.99%),
+  background-image: linear-gradient(-45deg, transparent 65%, #f4f4f4 65.99%),
+    linear-gradient(45deg, transparent 75%, #f4f4f4 75.99%),
+    linear-gradient(-45deg, #f4f4f4 40%, transparent 40.99%),
     linear-gradient(
       45deg,
-      white 30%,
+      #f4f4f4 30%,
       #333333 30.99%,
       #333333 40%,
       transparent 40.99%
     ),
-    linear-gradient(-45deg, #333333 50%, white 50.99%);
+    linear-gradient(-45deg, #333333 50%, #f4f4f4 50.99%);
 }
