@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import { useSelector } from "react-redux";
-import { kanji } from "../reducers/QuestionReducer";
+import { Kanji } from "../reducers/QuestionReducer";
 import { Option } from "./Option";
 
 interface QuestionProps {}
@@ -9,7 +9,7 @@ interface QuestionProps {}
 export const Question: FC<QuestionProps> = () => {
   const [optionIds, setOptionIds] = useState<number[]>([]);
   const kanji = useSelector(
-    (state: { question: { kanji: kanji } }) => state.question.kanji
+    (state: { question: { kanji: Kanji } }) => state.question.kanji
   );
   const questionAnswered = useSelector(
     (state: { question: { answered: boolean } }) => state.question.answered

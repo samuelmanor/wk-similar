@@ -12,3 +12,10 @@ const now = new Date();
 const seconds = now.getSeconds();
 return 60 - seconds;
 }
+
+srs_stages
+9 -> burned
+8 -> enlightened
+7 -> master
+6 -> guru
+5 -> apprentice

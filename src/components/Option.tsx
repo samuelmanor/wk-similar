@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FC } from "react";
-import { kanji } from "../reducers/QuestionReducer";
+import { Kanji } from "../reducers/QuestionReducer";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
@@ -12,7 +12,7 @@ interface OptionProps {
 
 export const Option: FC<OptionProps> = ({ id, index }) => {
   const [selected, setSelected] = useState(false);
-  const [kanji, setKanji] = useState<kanji>({
+  const [kanji, setKanji] = useState<Kanji>({
     id: 0,
     character: "",
     url: "",

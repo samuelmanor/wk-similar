@@ -1,21 +1,51 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FC } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setLevel } from "../reducers/UserReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { initStudy } from "../reducers/QuestionReducer";
 
 interface ModeSelectProps {}
 
 export const ModeSelect: FC<ModeSelectProps> = () => {
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
-  const userLevel = useSelector(
-    (state: { user: { level: number } }) => state.user.level
-  );
-  const apiKey = useSelector(
-    (state: { user: { apiKey: string } }) => state.user.apiKey
-  );
+  const [selectedSrs, setSelectedSrs] = useState([
+    {
+      name: "apprentice",
+      color: "pink",
+      selected: false,
+      id: 5,
+    },
+    {
+      name: "guru",
+      color: "purple",
+      selected: false,
+      id: 6,
+    },
+    {
+      name: "master",
+      color: "[#304ed1]",
+      selected: false,
+      id: 7,
+    },
+    {
+      name: "enlightened",
+      color: "blue",
+      selected: false,
+      id: 8,
+    },
+    {
+      name: "burned",
+      color: "text",
+      selected: false,
+      id: 9,
+    },
+  ]);
 
-  const dispatch = useDispatch();
+  const userLevel = useAppSelector((state) => state.user.level);
+  const apiKey = useAppSelector((state) => state.user.apiKey);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (userLevel === 0) {
@@ -27,6 +57,9 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
         })
         .then((res) => {
           if (res.status === 200) {
+            if (res.data.data.level === 0) {
+              console.log("no level data available");
+            }
             dispatch(setLevel(res.data.data.level));
             setSelectedLevel(res.data.data.level);
           }
@@ -37,8 +70,26 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
     }
   }, []);
 
+  const initStudyByLevel = () => {
+    const range = [];
+    for (let i = 1; i <= selectedLevel; i++) {
+      range.push(i);
+    }
+
+    dispatch(initStudy("level", range.toString()));
+  };
+
+  const initStudyBySrs = () => {
+    const selectedSrsIds = selectedSrs
+      .filter((srs) => srs.selected)
+      .map((srs) => srs.id);
+
+    dispatch(initStudy("srs", selectedSrsIds.toString()));
+  };
+
   return (
-    <div className="bg-background w-full h-screen flex justify-center items-center flex-col">
+    <div className="bg-background w-full h-screen flex justify-center items-center flex-col font-body">
+      <p onClick={() => console.log(selectedSrs)}>stages</p>
       <div className="w-1/3 mx-auto flex flex-col gap-10">
         <div className="collapse">
           <input type="radio" name="mode-select" />
@@ -47,10 +98,10 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               study by level
             </p>
           </div>
-          <div className="collapse-content bg-paper text-text">
-            <p className="pt-2">select level range to study from:</p>
+          <div className="collapse-content bg-paper text-text flex justify-center items-center flex-col">
+            <p className="pt-5">select level range to study from:</p>
             <div className="flex justify-center items-center gap-2">
-              <p className="w-3">0</p>
+              <p className="w-3 text-lg">0</p>
               <input
                 type="range"
                 step="1"
@@ -59,11 +110,16 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(parseInt(e.target.value))}
                 id="level-range"
-                className="w-52 range"
+                className="w-52 range [--range-shdw:#00aaff]"
               />
-              <p className="w-5">{selectedLevel}</p>
+              <p className="w-5 font-body text-lg">{selectedLevel}</p>
             </div>
-            <p onClick={() => console.log(userLevel)}>test</p>
+            <button
+              onClick={initStudyByLevel}
+              className="btn btn-outline font-mono text-lg bg-paper text-text w-36 mx-auto mt-5"
+            >
+              勉強しよう
+            </button>
           </div>
         </div>
         <div className="collapse">
@@ -73,14 +129,45 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               study by srs stage
             </p>
           </div>
-          <div className="collapse-content bg-paper text-text">
-            <p className="pt-2">test</p>
+          <div className="collapse-content bg-paper text-text flex justify-center items-center flex-col">
+            <p className="pt-5 pb-1">select stages to study from:</p>
+            <div className="form-control flex flex-col justify-center items-center gap-2">
+              {selectedSrs.map((srs, i) => (
+                <label
+                  key={i}
+                  className={`label cursor-pointer bg-${srs.color} rounded p-3`}
+                >
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={srs.selected}
+                    onChange={(e) => {
+                      const newSrs = [...selectedSrs];
+                      newSrs[i].selected = e.target.checked;
+                      setSelectedSrs(newSrs);
+                    }}
+                    onClick={() => console.log(srs)}
+                  />
+                  <span className="label-text pl-2 w-36 text-paper">
+                    {srs.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <button
+              onClick={initStudyBySrs}
+              className="btn btn-outline font-mono text-lg bg-paper text-text w-36 mx-auto mt-5"
+            >
+              勉強しよう
+            </button>
           </div>
         </div>
         <div className="collapse">
           <input type="radio" name="mode-select" />
           <div className="collapse-title bg-pink text-paper cursor-pointer">
-            <p className="text-2xl font-bold text-center pl-6">study random</p>
+            <p className="text-2xl font-bold text-center pl-6">
+              study most recent
+            </p>
           </div>
           <div className="collapse-content bg-paper text-text">content 3</div>
         </div>

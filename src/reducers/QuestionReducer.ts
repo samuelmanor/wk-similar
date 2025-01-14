@@ -1,15 +1,51 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
+import axios from "axios";
 
-/**
- * @interface kanji
- *  @property {number} id - selected kanji's id
- * @property {string} character - selected kanji character
- * @property {string} url - link to kanji's page on wanikani
- * @property {number} level - level where kanji is introduced
- * @property {string[]} meanings - array of possible meanings
- * @property {number[]} similarIds - array of similar kanji's ids
- */
-export interface kanji {
+interface ReturnedKanjiData {
+  data: {
+    amalgamation_subject_ids: number[];
+    auxiliary_meanings: [
+      {
+        meaning: string;
+        type: string;
+      }
+    ];
+    characters: string;
+    component_subject_ids: number[];
+    created_at: string | null;
+    document_url: string;
+    hidden_at: string | null;
+    lesson_position: number;
+    level: number;
+    meaning_hint: string;
+    meaning_mnemonic: string;
+    meanings: [
+      {
+        meaning: string;
+        primary: boolean;
+        accepted_answer: boolean;
+      }
+    ];
+    reading_hint: string;
+    reading_mnemonic: string;
+    readings: [
+      {
+        reading: string;
+        primary: boolean;
+        accepted_answer: boolean;
+        type: string;
+      }
+    ];
+    slug: string;
+    visually_similar_subject_ids: number[];
+  };
+  data_updated_at: string;
+  id: number;
+  object: "kanji";
+  url: string;
+}
+
+export interface Kanji {
   id: number;
   character: string;
   url: string;
@@ -18,28 +54,26 @@ export interface kanji {
   similarIds: number[];
 }
 
+interface QuestionState {
+  currentKanjiId: number;
+  answered: boolean;
+  correct: boolean | null;
+  validKanji: Kanji[];
+}
+
+const initialState: QuestionState = {
+  currentKanjiId: 0,
+  answered: false,
+  correct: null,
+  validKanji: [],
+};
+
 const questionSlice = createSlice({
   name: "question",
-  initialState: {
-    kanji: {
-      id: 0,
-      character: "",
-      url: "",
-      level: 0,
-      meanings: [] as string[],
-      similarIds: [] as number[],
-    },
-    answered: false,
-    correct: null,
-  },
+  initialState,
   reducers: {
-    setKanji: (state, action) => {
-      state.kanji.id = action.payload.id;
-      state.kanji.character = action.payload.character;
-      state.kanji.url = action.payload.url;
-      state.kanji.level = action.payload.level;
-      state.kanji.meanings = action.payload.meanings;
-      state.kanji.similarIds = action.payload.similarIds;
+    setCurrentKanjiId: (state, action) => {
+      state.currentKanjiId = action.payload;
     },
     setAnswered: (state, action) => {
       state.answered = action.payload;
@@ -47,10 +81,91 @@ const questionSlice = createSlice({
     setCorrect: (state, action) => {
       state.correct = action.payload;
     },
+    setValidKanji: (state, action) => {
+      if (current(state).validKanji.length === 0) {
+        state.validKanji = action.payload;
+      } else {
+        state.validKanji = [...current(state).validKanji, action.payload];
+      }
+    },
   },
 });
 
-export const { setKanji, setAnswered, setCorrect } = questionSlice.actions;
+export const { setCurrentKanjiId, setAnswered, setCorrect, setValidKanji } =
+  questionSlice.actions;
+
+export const initStudy = (
+  type: "level" | "srs" | "recent",
+  selection: string | null
+) => {
+  return async (dispatch: any, useState: any) => {
+    let url = "https://api.wanikani.com/v2/subjects?types=kanji&started=true";
+    switch (type) {
+      case "level":
+        url += `&levels=${selection}`;
+        break;
+      case "srs":
+        url += `&srs_stages=${selection}`;
+        break;
+      case "recent":
+        break;
+      default:
+        break;
+    }
+
+    const apiKey = useState().user.apiKey;
+
+    // recursively fetch all pages of kanji ids
+    const fetchIds = async (url: string | null) => {
+      if (url) {
+        await axios
+          .get(url, {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+          })
+          .then((res) => {
+            console.log("fetched", res.data);
+
+            dispatch(
+              setValidKanji(
+                res.data.data
+                  .filter(
+                    (kanji: ReturnedKanjiData) =>
+                      kanji.data.visually_similar_subject_ids.length > 1
+                  )
+                  .map((kanji: ReturnedKanjiData) => {
+                    return {
+                      id: kanji.id,
+                      character: kanji.data.characters,
+                      url: kanji.url,
+                      level: kanji.data.level,
+                      meanings: kanji.data.meanings.map(
+                        (meaning) => meaning.meaning
+                      ),
+                      similarIds: kanji.data.visually_similar_subject_ids,
+                    };
+                  })
+              )
+            );
+
+            if (
+              res.data.total_count > res.data.pages.per_page &&
+              res.data.pages.next_url
+            ) {
+              console.log("fetching next page");
+              fetchIds(res.data.pages.next_url);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    };
+
+    await fetchIds(url);
+  };
+};
 
 export default questionSlice.reducer;
 // holds selected kanji, possible answers, answer, etc

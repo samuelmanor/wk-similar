@@ -6,7 +6,7 @@ import { Question } from "./components/Question";
 import { ModeSelect } from "./components/ModeSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
-import { setKanji, setAnswered, setCorrect } from "./reducers/QuestionReducer";
+// import { setKanji, setAnswered, setCorrect } from "./reducers/QuestionReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -102,8 +102,8 @@ function App() {
     // pickRandomKanji();
     setTimeout(() => {
       removeKanji(kanji.id);
-      dispatch(setAnswered(false));
-      dispatch(setCorrect(false));
+      // dispatch(setAnswered(false));
+      // dispatch(setCorrect(false));
     }, 200);
     pickRandomKanji();
   };
@@ -131,16 +131,16 @@ function App() {
         removeKanji(currentKanji.id);
         pickRandomKanji();
       } else {
-        dispatch(
-          setKanji({
-            id: currentKanji.id,
-            character: currentKanji.characters,
-            url: currentKanji.document_url,
-            level: currentKanji.level,
-            meanings: currentKanji.meanings.map((m) => m.meaning),
-            similarIds: currentKanji.visually_similar_subject_ids,
-          })
-        );
+        // dispatch(
+        //   setKanji({
+        //     id: currentKanji.id,
+        //     character: currentKanji.characters,
+        //     url: currentKanji.document_url,
+        //     level: currentKanji.level,
+        //     meanings: currentKanji.meanings.map((m) => m.meaning),
+        //     similarIds: currentKanji.visually_similar_subject_ids,
+        //   })
+        // );
       }
     }
   }, [currentKanji]);
