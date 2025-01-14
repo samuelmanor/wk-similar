@@ -1,7 +1,7 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface ReturnedKanjiData {
+interface KanjiSubjectData {
   data: {
     amalgamation_subject_ids: number[];
     auxiliary_meanings: [
@@ -45,6 +45,26 @@ interface ReturnedKanjiData {
   url: string;
 }
 
+interface KanjiAssignmentData {
+  data: {
+    available_at: string | null;
+    burned_at: string | null;
+    created_at: string;
+    hidden: boolean;
+    passed_at: string | null;
+    resurrected_at: string | null;
+    srs_stage: number;
+    started_at: string;
+    subject_id: number;
+    subject_type: string;
+    unlocked_at: string | null;
+  };
+  data_updated_at: string;
+  id: number;
+  object: "assignment";
+  url: string;
+}
+
 export interface Kanji {
   id: number;
   character: string;
@@ -55,14 +75,23 @@ export interface Kanji {
 }
 
 interface QuestionState {
-  currentKanjiId: number;
+  currentKanji: Kanji;
+  currentSimilarKanji: Kanji[];
   answered: boolean;
   correct: boolean | null;
-  validKanji: Kanji[];
+  validKanji: Kanji[] | number[]; // kanji[] if level mode, number[] if srs mode
 }
 
 const initialState: QuestionState = {
-  currentKanjiId: 0,
+  currentKanji: {
+    id: 0,
+    character: "",
+    url: "",
+    level: 0,
+    meanings: [],
+    similarIds: [],
+  },
+  currentSimilarKanji: [],
   answered: false,
   correct: null,
   validKanji: [],
@@ -72,8 +101,11 @@ const questionSlice = createSlice({
   name: "question",
   initialState,
   reducers: {
-    setCurrentKanjiId: (state, action) => {
-      state.currentKanjiId = action.payload;
+    setCurrentKanji: (state, action) => {
+      state.currentKanji = action.payload;
+    },
+    setSimilarKanji: (state, action) => {
+      state.currentSimilarKanji = action.payload;
     },
     setAnswered: (state, action) => {
       state.answered = action.payload;
@@ -88,31 +120,85 @@ const questionSlice = createSlice({
         state.validKanji = [...current(state).validKanji, action.payload];
       }
     },
+    removeValidKanji: (state, action) => {
+      const index = action.payload;
+      state.validKanji = state.validKanji.splice(index, 1);
+    },
   },
 });
 
-export const { setCurrentKanjiId, setAnswered, setCorrect, setValidKanji } =
-  questionSlice.actions;
+export const {
+  setCurrentKanji,
+  setSimilarKanji,
+  setAnswered,
+  setCorrect,
+  setValidKanji,
+  removeValidKanji,
+} = questionSlice.actions;
 
-export const initStudy = (
-  type: "level" | "srs" | "recent",
-  selection: string | null
-) => {
+export const getSimilarKanji = (similarIds: number[]) => {
   return async (dispatch: any, useState: any) => {
-    let url = "https://api.wanikani.com/v2/subjects?types=kanji&started=true";
-    switch (type) {
-      case "level":
-        url += `&levels=${selection}`;
-        break;
-      case "srs":
-        url += `&srs_stages=${selection}`;
-        break;
-      case "recent":
-        break;
-      default:
-        break;
+    const apiKey = useState().user.apiKey;
+    let ids = [...similarIds]; // copy array
+
+    // if more than 3 similar kanji, pick 3 random ones
+    if (ids.length > 3) {
+      ids.sort(() => Math.random() - 0.5); // randomize array
+      ids = ids.slice(0, 3); // take first 3 elements
     }
 
+    let kanjiOptions = [useState().question.currentKanji];
+
+    const getSimilarKanji = async (id: number, index: number) => {
+      await axios
+        .get(`https://api.wanikani.com/v2/subjects/${id}`, {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data, index);
+          const kanji = {
+            id: res.data.id,
+            character: res.data.data.characters,
+            url: res.data.data.document_url,
+            level: res.data.data.level,
+            meanings: res.data.data.meanings.map(
+              (meaning: { meaning: string }) => meaning.meaning
+            ),
+            similarIds: res.data.data.visually_similar_subject_ids,
+          };
+
+          kanjiOptions = [...kanjiOptions, kanji];
+        });
+    };
+
+    // get similar kanji for each id
+    for (let i = 0; i < ids.length; i++) {
+      await getSimilarKanji(ids[i], i);
+    }
+
+    // randomize kanjiOptions
+    kanjiOptions = kanjiOptions.sort(() => Math.random() - 0.5);
+
+    dispatch(setSimilarKanji(kanjiOptions));
+  };
+};
+
+export const pickKanji = () => {
+  return async (dispatch: any, useState: any) => {
+    const validKanji = useState().question.validKanji;
+    const currentKanjiIndex = Math.floor(Math.random() * validKanji.length);
+
+    dispatch(setCurrentKanji(validKanji[currentKanjiIndex]));
+    dispatch(removeValidKanji(currentKanjiIndex));
+
+    dispatch(getSimilarKanji(validKanji[currentKanjiIndex].similarIds));
+  };
+};
+
+export const initStudyByLevel = (selectedLevels: string) => {
+  return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
 
     // recursively fetch all pages of kanji ids
@@ -125,16 +211,16 @@ export const initStudy = (
             },
           })
           .then((res) => {
-            console.log("fetched", res.data);
+            console.log("fetched:", res.data);
 
             dispatch(
               setValidKanji(
                 res.data.data
                   .filter(
-                    (kanji: ReturnedKanjiData) =>
+                    (kanji: KanjiSubjectData) =>
                       kanji.data.visually_similar_subject_ids.length > 1
                   )
-                  .map((kanji: ReturnedKanjiData) => {
+                  .map((kanji: KanjiSubjectData) => {
                     return {
                       id: kanji.id,
                       character: kanji.data.characters,
@@ -163,7 +249,58 @@ export const initStudy = (
       }
     };
 
-    await fetchIds(url);
+    await fetchIds(
+      `https://api.wanikani.com/v2/subjects?types=kanji&started=true&levels=${selectedLevels}`
+    );
+
+    dispatch(pickKanji());
+  };
+};
+
+export const initStudyBySrs = (selectedStage: string) => {
+  return async (dispatch: any, useState: any) => {
+    const apiKey = useState().user.apiKey;
+    // recursively fetch all pages of kanji ids
+    const fetchIds = async (url: string | null) => {
+      if (url) {
+        await axios
+          .get(url, {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+          })
+          .then((res) => {
+            console.log("fetched:", res.data);
+
+            dispatch(
+              setValidKanji(
+                res.data.data
+                  .filter(
+                    (kanji: KanjiAssignmentData) =>
+                      kanji.data.subject_type === "kanji"
+                  )
+                  .map((kanji: KanjiAssignmentData) => kanji.data.subject_id)
+              )
+            );
+
+            if (
+              res.data.total_count > res.data.pages.per_page &&
+              res.data.pages.next_url
+            ) {
+              console.log("fetching next page");
+              fetchIds(res.data.pages.next_url);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    };
+    await fetchIds(
+      `https://api.wanikani.com/v2/assignments?srs_stages=${selectedStage}`
+    );
+
+    dispatch(pickKanji());
   };
 };
 

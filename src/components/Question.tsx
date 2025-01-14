@@ -3,47 +3,52 @@ import { FC } from "react";
 import { useSelector } from "react-redux";
 import { Kanji } from "../reducers/QuestionReducer";
 import { Option } from "./Option";
+import { useAppSelector } from "../hooks";
 
 interface QuestionProps {}
 
 export const Question: FC<QuestionProps> = () => {
-  const [optionIds, setOptionIds] = useState<number[]>([]);
-  const kanji = useSelector(
-    (state: { question: { kanji: Kanji } }) => state.question.kanji
+  // const [optionIds, setOptionIds] = useState<number[]>([]);
+  const kanji = useAppSelector((state) => state.question.currentKanji);
+  const similarKanji = useAppSelector(
+    (state) => state.question.currentSimilarKanji
   );
-  const questionAnswered = useSelector(
-    (state: { question: { answered: boolean } }) => state.question.answered
-  );
-  const questionCorrect = useSelector(
-    (state: { question: { correct: boolean } }) => state.question.correct
-  );
+  // const questionAnswered = useSelector(
+  //   (state: { question: { answered: boolean } }) => state.question.answered
+  // );
+  // const questionCorrect = useSelector(
+  //   (state: { question: { correct: boolean } }) => state.question.correct
+  // );
 
   /**
    * Generates question options from selected kanji's similar kanji, and selected kanji
    */
-  const pickOptions = () => {
-    let arr = [...kanji.similarIds]; // copy array
+  // const pickOptions = () => {
+  //   let arr = [...kanji.similarIds]; // copy array
 
-    // if more than 3 similar kanji, pick 3 random ones
-    if (arr.length > 3) {
-      arr.sort(() => Math.random() - 0.5); // randomize array
-      arr = arr.slice(0, 3); // take first 3 elements
-    }
+  //   // if more than 3 similar kanji, pick 3 random ones
+  //   if (arr.length > 3) {
+  //     arr.sort(() => Math.random() - 0.5); // randomize array
+  //     arr = arr.slice(0, 3); // take first 3 elements
+  //   }
 
-    arr.push(kanji.id); // add selected kanji to end of array
+  //   arr.push(kanji.id); // add selected kanji to end of array
 
-    // randomize array
-    arr = arr.sort(() => Math.random() - 0.5);
+  //   // randomize array
+  //   arr = arr.sort(() => Math.random() - 0.5);
 
-    setOptionIds(arr);
-  };
+  //   setOptionIds(arr);
+  // };
 
-  useEffect(() => {
-    pickOptions();
-  }, [kanji]);
+  // useEffect(() => {
+  //   // pickOptions();
+  //   // console.log("kanji changed");
+  //   console.log(similarKanji);
+  // }, [kanji]);
 
   return (
-    <div className={`${kanji.id === 0 ? "hidden" : ""} mt-5`}>
+    <div className={`mt-5`}>
+      <p onClick={() => console.log(kanji, similarKanji)}>penits</p>
       <div className="flex flex-col justify-center items-center">
         <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text mb-2">
           select the kanji that means
@@ -64,24 +69,10 @@ export const Question: FC<QuestionProps> = () => {
         </h3>
       </div>
       <div className="grid phone:grid-cols-1 tablet:grid-cols-2 phone:gap-4 tablet:gap-8 w-fit mx-auto my-4">
-        {optionIds.map((id: number, i: number) => (
-          <div className="w-52" key={`option-${id}`}>
-            <Option key={id} id={id} index={i} />
-          </div>
+        {similarKanji.map((kanji: Kanji, i: number) => (
+          <Option index={i} kanji={kanji} key={kanji.id} />
         ))}
       </div>
     </div>
   );
 };
-
-{
-  /* <button
-onClick={() => nextQuestion()}
-className={`phone:text-8xl tablet:text-9xl w-fit mx-auto ${
-  questionAnswered ? "text-text" : "text-background"
-}`}
-disabled={!questionAnswered}
->
-→
-</button> */
-}

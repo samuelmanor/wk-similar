@@ -4,77 +4,71 @@ import { Kanji } from "../reducers/QuestionReducer";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
+import { useAppSelector } from "../hooks";
 
 interface OptionProps {
-  id: number;
+  // id: number;
   index: number;
+  kanji: Kanji;
 }
 
-export const Option: FC<OptionProps> = ({ id, index }) => {
+export const Option: FC<OptionProps> = ({ index, kanji }) => {
   const [selected, setSelected] = useState(false);
-  const [kanji, setKanji] = useState<Kanji>({
-    id: 0,
-    character: "",
-    url: "",
-    level: 0,
-    meanings: [],
-    similarIds: [],
-  });
-  const answer = useSelector((state: any) => state.question.kanji);
-  const apiKey = useSelector((state: any) => state.user.apiKey);
+  const answer = useAppSelector((state) => state.question.currentKanji);
+  // const apiKey = useAppSelector((state) => state.user.apiKey);
 
-  const questionAnswered = useSelector((state: any) => state.question.answered);
-  const questionCorrect = useSelector((state: any) => state.question.correct);
+  const questionAnswered = useAppSelector((state) => state.question.answered);
+  const questionCorrect = useAppSelector((state) => state.question.correct);
 
   const dispatch = useDispatch();
 
   const handleClick = () => {
     if (!questionAnswered) {
-      setSelected(true);
-      dispatch(setAnswered(true));
-
-      if (id === answer.id ? true : false) {
-        dispatch(setCorrect(true));
-      } else {
-        dispatch(setCorrect(false));
-      }
+      // setSelected(true);
+      // dispatch(setAnswered(true));
+      // if (kanji.id === answer.id ? true : false) {
+      //   dispatch(setCorrect(true));
+      // } else {
+      //   dispatch(setCorrect(false));
+      // }
+      console.log(kanji.id === answer.id);
     }
   };
 
-  useEffect(() => {
-    if (answer.id !== 0) {
-      axios
-        .get(`https://api.wanikani.com/v2/subjects/${id}`, {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        })
-        .then((res) => {
-          setKanji({
-            id: res.data.id,
-            character: res.data.data.characters,
-            url: res.data.data.document_url,
-            level: res.data.data.level,
-            meanings: res.data.data.meanings[0].meaning.toLowerCase(),
-            similarIds: res.data.data.visually_similar_subject_ids,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   // if (answer.id !== 0) {
+  //   //   axios
+  //   //     .get(`https://api.wanikani.com/v2/subjects/${id}`, {
+  //   //       headers: {
+  //   //         Authorization: `Bearer ${apiKey}`,
+  //   //       },
+  //   //     })
+  //   //     .then((res) => {
+  //   //       setKanji({
+  //   //         id: res.data.id,
+  //   //         character: res.data.data.characters,
+  //   //         url: res.data.data.document_url,
+  //   //         level: res.data.data.level,
+  //   //         meanings: res.data.data.meanings[0].meaning.toLowerCase(),
+  //   //         similarIds: res.data.data.visually_similar_subject_ids,
+  //   //       });
+  //   //     })
+  //   //     .catch((err) => {
+  //   //       console.log(err);
+  //   //     });
+  //   // }
+  // }, [id]);
 
   const bgColor = () => {
     if (questionAnswered) {
       if (questionCorrect) {
-        if (id === answer.id) {
+        if (kanji.id === answer.id) {
           return "#88cc00";
         } else {
           return "#b2b2b2";
         }
       } else {
-        if (id === answer.id) {
+        if (kanji.id === answer.id) {
           return "#88cc00";
         } else if (selected) {
           return "#ff0033";
@@ -91,7 +85,7 @@ export const Option: FC<OptionProps> = ({ id, index }) => {
     <div className={"w-fit mx-auto"}>
       <div
         className={`tooltip font-body ${
-          questionAnswered && id !== answer.id
+          questionAnswered && kanji.id !== answer.id
             ? "[--tooltip-color:#b2b2b2] [--tooltip-text-color:text]"
             : "[--tooltip-color:transparent] [--tooltip-text-color:transparent]"
         }

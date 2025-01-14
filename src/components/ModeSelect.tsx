@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import { setLevel } from "../reducers/UserReducer";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { initStudy } from "../reducers/QuestionReducer";
+import { initStudyByLevel, initStudyBySrs } from "../reducers/QuestionReducer";
 
-interface ModeSelectProps {}
+interface ModeSelectProps {
+  startGame: () => void;
+}
 
-export const ModeSelect: FC<ModeSelectProps> = () => {
+export const ModeSelect: FC<ModeSelectProps> = ({ startGame }) => {
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const [selectedSrs, setSelectedSrs] = useState([
     {
@@ -45,6 +47,8 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
   const userLevel = useAppSelector((state) => state.user.level);
   const apiKey = useAppSelector((state) => state.user.apiKey);
 
+  const validKanji = useAppSelector((state) => state.question.validKanji);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -70,26 +74,30 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
     }
   }, []);
 
-  const initStudyByLevel = () => {
+  const studyByLevel = () => {
     const range = [];
     for (let i = 1; i <= selectedLevel; i++) {
       range.push(i);
     }
 
-    dispatch(initStudy("level", range.toString()));
+    console.log("by level");
+    dispatch(initStudyByLevel(range.toString()));
+    startGame();
   };
 
-  const initStudyBySrs = () => {
+  const studyBySrs = () => {
     const selectedSrsIds = selectedSrs
       .filter((srs) => srs.selected)
       .map((srs) => srs.id);
 
-    dispatch(initStudy("srs", selectedSrsIds.toString()));
+    console.log("by srs");
+    dispatch(initStudyBySrs(selectedSrsIds.toString()));
+    startGame();
   };
 
   return (
     <div className="bg-background w-full h-screen flex justify-center items-center flex-col font-body">
-      <p onClick={() => console.log(selectedSrs)}>stages</p>
+      <p onClick={() => console.log(validKanji)}>valid</p>
       <div className="w-1/3 mx-auto flex flex-col gap-10">
         <div className="collapse">
           <input type="radio" name="mode-select" />
@@ -115,7 +123,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               <p className="w-5 font-body text-lg">{selectedLevel}</p>
             </div>
             <button
-              onClick={initStudyByLevel}
+              onClick={studyByLevel}
               className="btn btn-outline font-mono text-lg bg-paper text-text w-36 mx-auto mt-5"
             >
               勉強しよう
@@ -135,7 +143,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               {selectedSrs.map((srs, i) => (
                 <label
                   key={i}
-                  className={`label cursor-pointe rounded p-3 border`}
+                  className={`label cursor-pointe rounded p-3`}
                   style={{ backgroundColor: srs.color }}
                 >
                   <input
@@ -155,7 +163,7 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               ))}
             </div>
             <button
-              onClick={initStudyBySrs}
+              onClick={studyBySrs}
               className="btn btn-outline font-mono text-lg bg-paper text-text w-36 mx-auto mt-5"
             >
               勉強しよう
@@ -169,113 +177,11 @@ export const ModeSelect: FC<ModeSelectProps> = () => {
               study most recent
             </p>
           </div>
-          <div className="collapse-content bg-paper text-text">content 3</div>
+          <div className="collapse-content bg-paper text-text">
+            <p className="pt-5 pb-1">select stages to study from:</p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
-// const [showWelcome, setShowWelcome] = useState(true);
-// const [gameInitialized, setGameInitialized] = useState(false);
-// const [availableKanji, setAvailableKanji] = useState(0); // list of kanji objects from the api
-// const [currentKanji, setCurrentKanji] = useState(null); // random kanji object from the api
-// const kanji = useSelector((state) => state.question.kanji); // current valid kanji object from the store
-// const questionAnswered = useSelector((state) => state.question.answered); // if the question has been answered
-
-// const apiKey = useSelector((state) => state.user.apiKey);
-
-// const dispatch = useDispatch();
-
-// /**
-//  * Gets a list of kanji that are available to study
-//  */
-// const getAvailableKanji = () => {
-//   axios
-//     .get(
-//       "https://api.wanikani.com/v2/assignments?started=true&subject_types=kanji",
-//       {
-//         headers: {
-//           Authorization: `Bearer ${apiKey}`,
-//         },
-//       }
-//     )
-//     .then((res) => {
-//       // console.log(res.data);
-//       // const totalAvailableKanji = res.data.total_count;
-
-//       if (res.data.total_count > 0) {
-//         setAvailableKanji(res.data.data);
-//         pickRandomKanji(res.data.data);
-//       } else {
-//         console.log("no kanji available");
-//       }
-//     });
-// };
-
-// /**
-//  * Fetches the kanji with the given id
-//  * @param {number} id the id of the kanji to fetch
-//  */
-// const fetchKanji = (id) => {
-//   axios
-//     .get(`https://api.wanikani.com/v2/subjects/${id}`, {
-//       headers: {
-//         Authorization: `Bearer ${apiKey}`,
-//       },
-//     })
-//     .then((res) => {
-//       // console.log("fetchkanji", res.data);
-//       // console.log(res.data.data.visually_similar_subject_ids);
-//       setCurrentKanji({ ...res.data.data, id: res.data.id });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
-
-// /**
-//  * Picks a random kanji from the available kanji, then fetches it
-//  * @param {array} data the array of kanji objects to pick from; defaults to {@link availableKanji}
-//  */
-// const pickRandomKanji = (data = availableKanji) => {
-//   const limit = data.length > 500 ? 500 : data.length;
-//   const randomIndex = Math.floor(Math.random() * limit);
-
-//   // console.log(data[randomIndex]);
-//   if (data[randomIndex]?.data !== undefined) {
-//     fetchKanji(data[randomIndex].data.subject_id);
-//   }
-// };
-
-// /**
-//  * Removes the kanji with the given id from the available kanji array
-//  */
-// const removeKanji = (id) => {
-//   setAvailableKanji((prev) => {
-//     const newAvailableKanji = [...prev];
-//     newAvailableKanji.splice(
-//       newAvailableKanji.findIndex((k) => k.data.subject_id === id),
-//       1
-//     );
-//     return newAvailableKanji;
-//   });
-// };
-
-// /**
-//  * Resets the question to the next one
-//  */
-// const nextQuestion = () => {
-//   // pickRandomKanji();
-//   setTimeout(() => {
-//     removeKanji(kanji.id);
-//     dispatch(setAnswered(false));
-//     dispatch(setCorrect(false));
-//   }, 200);
-//   pickRandomKanji();
-// };
-
-// const startGame = () => {
-//   setGameInitialized(true);
-//   getAvailableKanji();
-// };

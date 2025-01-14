@@ -23,95 +23,95 @@ function App() {
   /**
    * Gets a list of kanji that are available to study
    */
-  const getAvailableKanji = () => {
-    axios
-      .get(
-        "https://api.wanikani.com/v2/assignments?started=true&subject_types=kanji",
-        {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      )
-      .then((res) => {
-        // console.log(res.data);
-        // const totalAvailableKanji = res.data.total_count;
+  // const getAvailableKanji = () => {
+  //   axios
+  //     .get(
+  //       "https://api.wanikani.com/v2/assignments?started=true&subject_types=kanji",
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${apiKey}`,
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       // console.log(res.data);
+  //       // const totalAvailableKanji = res.data.total_count;
 
-        if (res.data.total_count > 0) {
-          setAvailableKanji(res.data.data);
-          pickRandomKanji(res.data.data);
-        } else {
-          console.log("no kanji available");
-        }
-      });
-  };
+  //       if (res.data.total_count > 0) {
+  //         setAvailableKanji(res.data.data);
+  //         pickRandomKanji(res.data.data);
+  //       } else {
+  //         console.log("no kanji available");
+  //       }
+  //     });
+  // };
 
   /**
    * Fetches the kanji with the given id
    * @param {number} id the id of the kanji to fetch
    */
-  const fetchKanji = (id) => {
-    axios
-      .get(`https://api.wanikani.com/v2/subjects/${id}`, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      })
-      .then((res) => {
-        // console.log("fetchkanji", res.data);
-        // console.log(res.data.data.visually_similar_subject_ids);
-        setCurrentKanji({ ...res.data.data, id: res.data.id });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const fetchKanji = (id) => {
+  //   axios
+  //     .get(`https://api.wanikani.com/v2/subjects/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${apiKey}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       // console.log("fetchkanji", res.data);
+  //       // console.log(res.data.data.visually_similar_subject_ids);
+  //       setCurrentKanji({ ...res.data.data, id: res.data.id });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   /**
    * Picks a random kanji from the available kanji, then fetches it
    * @param {array} data the array of kanji objects to pick from; defaults to {@link availableKanji}
    */
-  const pickRandomKanji = (data = availableKanji) => {
-    const limit = data.length > 500 ? 500 : data.length;
-    const randomIndex = Math.floor(Math.random() * limit);
+  // const pickRandomKanji = (data = availableKanji) => {
+  //   const limit = data.length > 500 ? 500 : data.length;
+  //   const randomIndex = Math.floor(Math.random() * limit);
 
-    // console.log(data[randomIndex]);
-    if (data[randomIndex]?.data !== undefined) {
-      fetchKanji(data[randomIndex].data.subject_id);
-    }
-  };
+  //   // console.log(data[randomIndex]);
+  //   if (data[randomIndex]?.data !== undefined) {
+  //     fetchKanji(data[randomIndex].data.subject_id);
+  //   }
+  // };
 
   /**
    * Removes the kanji with the given id from the available kanji array
    */
-  const removeKanji = (id) => {
-    setAvailableKanji((prev) => {
-      const newAvailableKanji = [...prev];
-      newAvailableKanji.splice(
-        newAvailableKanji.findIndex((k) => k.data.subject_id === id),
-        1
-      );
-      return newAvailableKanji;
-    });
-  };
+  // const removeKanji = (id) => {
+  //   setAvailableKanji((prev) => {
+  //     const newAvailableKanji = [...prev];
+  //     newAvailableKanji.splice(
+  //       newAvailableKanji.findIndex((k) => k.data.subject_id === id),
+  //       1
+  //     );
+  //     return newAvailableKanji;
+  //   });
+  // };
 
   /**
    * Resets the question to the next one
    */
-  const nextQuestion = () => {
-    // pickRandomKanji();
-    setTimeout(() => {
-      removeKanji(kanji.id);
-      // dispatch(setAnswered(false));
-      // dispatch(setCorrect(false));
-    }, 200);
-    pickRandomKanji();
-  };
+  // const nextQuestion = () => {
+  //   // pickRandomKanji();
+  //   setTimeout(() => {
+  //     removeKanji(kanji.id);
+  //     // dispatch(setAnswered(false));
+  //     // dispatch(setCorrect(false));
+  //   }, 200);
+  //   pickRandomKanji();
+  // };
 
-  const startGame = () => {
-    setGameInitialized(true);
-    getAvailableKanji();
-  };
+  // const startGame = () => {
+  //   setGameInitialized(true);
+  //   getAvailableKanji();
+  // };
 
   // on component mount, check if the user has an api key saved in local storage
   useEffect(() => {
@@ -124,26 +124,26 @@ function App() {
   }, []);
 
   // if the current kanji has less than 2 visually similar kanji, pick a new one
-  useEffect(() => {
-    if (currentKanji !== null && currentKanji !== undefined) {
-      if (currentKanji.visually_similar_subject_ids.length < 1) {
-        // remove the current kanji from the available kanji
-        removeKanji(currentKanji.id);
-        pickRandomKanji();
-      } else {
-        // dispatch(
-        //   setKanji({
-        //     id: currentKanji.id,
-        //     character: currentKanji.characters,
-        //     url: currentKanji.document_url,
-        //     level: currentKanji.level,
-        //     meanings: currentKanji.meanings.map((m) => m.meaning),
-        //     similarIds: currentKanji.visually_similar_subject_ids,
-        //   })
-        // );
-      }
-    }
-  }, [currentKanji]);
+  // useEffect(() => {
+  //   if (currentKanji !== null && currentKanji !== undefined) {
+  //     if (currentKanji.visually_similar_subject_ids.length < 1) {
+  //       // remove the current kanji from the available kanji
+  //       removeKanji(currentKanji.id);
+  //       pickRandomKanji();
+  //     } else {
+  //       // dispatch(
+  //       //   setKanji({
+  //       //     id: currentKanji.id,
+  //       //     character: currentKanji.characters,
+  //       //     url: currentKanji.document_url,
+  //       //     level: currentKanji.level,
+  //       //     meanings: currentKanji.meanings.map((m) => m.meaning),
+  //       //     similarIds: currentKanji.visually_similar_subject_ids,
+  //       //   })
+  //       // );
+  //     }
+  //   }
+  // }, [currentKanji]);
 
   // useEffect(() => {
   //   console.log(kanji);
@@ -159,7 +159,7 @@ function App() {
         // <button onClick={startGame} className="text-text">
         //   study
         // </button>
-        <ModeSelect />
+        <ModeSelect startGame={() => setGameInitialized(true)} />
       ) : (
         <Question />
       )}
