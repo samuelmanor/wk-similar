@@ -25,7 +25,7 @@ export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
   };
 
   /**
-   * Tried to get user info from wanikani api using the provided api key
+   * Tries to get user info from wanikani api using the provided api key
    * If successful, saves the api key to local storage and redux store
    * If unsuccessful, shows error message
    */
@@ -50,9 +50,6 @@ export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
       });
   };
 
-  /**
-   * Gets api key from clipboard
-   */
   const getKeyFromClipboard = () => {
     navigator.clipboard.readText().then((text) => {
       setKey(text);

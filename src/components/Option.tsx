@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FC } from "react";
 import { Kanji } from "../reducers/QuestionReducer";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { setAnswered, setCorrect } from "../reducers/QuestionReducer";
-import { useAppSelector } from "../hooks";
+import { answerQuestion } from "../reducers/QuestionReducer";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 interface OptionProps {
-  // id: number;
   index: number;
   kanji: Kanji;
 }
@@ -15,49 +12,18 @@ interface OptionProps {
 export const Option: FC<OptionProps> = ({ index, kanji }) => {
   const [selected, setSelected] = useState(false);
   const answer = useAppSelector((state) => state.question.currentKanji);
-  // const apiKey = useAppSelector((state) => state.user.apiKey);
 
   const questionAnswered = useAppSelector((state) => state.question.answered);
   const questionCorrect = useAppSelector((state) => state.question.correct);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
     if (!questionAnswered) {
-      // setSelected(true);
-      // dispatch(setAnswered(true));
-      // if (kanji.id === answer.id ? true : false) {
-      //   dispatch(setCorrect(true));
-      // } else {
-      //   dispatch(setCorrect(false));
-      // }
-      console.log(kanji.id === answer.id);
+      setSelected(true);
+      dispatch(answerQuestion(kanji));
     }
   };
-
-  // useEffect(() => {
-  //   // if (answer.id !== 0) {
-  //   //   axios
-  //   //     .get(`https://api.wanikani.com/v2/subjects/${id}`, {
-  //   //       headers: {
-  //   //         Authorization: `Bearer ${apiKey}`,
-  //   //       },
-  //   //     })
-  //   //     .then((res) => {
-  //   //       setKanji({
-  //   //         id: res.data.id,
-  //   //         character: res.data.data.characters,
-  //   //         url: res.data.data.document_url,
-  //   //         level: res.data.data.level,
-  //   //         meanings: res.data.data.meanings[0].meaning.toLowerCase(),
-  //   //         similarIds: res.data.data.visually_similar_subject_ids,
-  //   //       });
-  //   //     })
-  //   //     .catch((err) => {
-  //   //       console.log(err);
-  //   //     });
-  //   // }
-  // }, [id]);
 
   const bgColor = () => {
     if (questionAnswered) {
@@ -92,7 +58,7 @@ export const Option: FC<OptionProps> = ({ index, kanji }) => {
         phone:tooltip-right
         ${index % 2 === 0 ? "tablet:tooltip-left" : "tablet:tooltip-right"}
         `}
-        data-tip={kanji.meanings}
+        data-tip={kanji.meanings.map((m: string) => m.toLowerCase()).join(", ")}
       >
         <button
           className={`btn phone:w-36 phone:h-36 tablet:w-48 tablet:h-48 laptop:w-52 laptop:h-52 hover:drop-shadow-lg border-none inline-block relative cursor-${

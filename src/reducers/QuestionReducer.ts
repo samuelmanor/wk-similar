@@ -102,6 +102,16 @@ const questionSlice = createSlice({
   initialState,
   reducers: {
     setCurrentKanji: (state, action) => {
+      // remove previous currentKanji from validKanji, if it exists
+      if (state.validKanji.length > 0) {
+        state.validKanji = (state.validKanji as (Kanji | number)[]).filter(
+          (kanji: Kanji | number) =>
+            typeof kanji === "number"
+              ? kanji !== state.currentKanji.id
+              : kanji.id !== state.currentKanji.id
+        ) as Kanji[];
+      } // maybe just use removeKanji action instead?
+
       state.currentKanji = action.payload;
     },
     setSimilarKanji: (state, action) => {
@@ -120,9 +130,13 @@ const questionSlice = createSlice({
         state.validKanji = [...current(state).validKanji, action.payload];
       }
     },
-    removeValidKanji: (state, action) => {
-      const index = action.payload;
-      state.validKanji = state.validKanji.splice(index, 1);
+    removeKanji: (state, action) => {
+      state.validKanji = (state.validKanji as (Kanji | number)[]).filter(
+        (kanji: Kanji | number) =>
+          typeof kanji === "number"
+            ? kanji !== action.payload
+            : kanji.id !== action.payload
+      ) as Kanji[];
     },
   },
 });
@@ -133,7 +147,7 @@ export const {
   setAnswered,
   setCorrect,
   setValidKanji,
-  removeValidKanji,
+  removeKanji,
 } = questionSlice.actions;
 
 export const getSimilarKanji = (similarIds: number[]) => {
@@ -157,7 +171,7 @@ export const getSimilarKanji = (similarIds: number[]) => {
           },
         })
         .then((res) => {
-          console.log(res.data, index);
+          // console.log(res.data, index);
           const kanji = {
             id: res.data.id,
             character: res.data.data.characters,
@@ -187,13 +201,34 @@ export const getSimilarKanji = (similarIds: number[]) => {
 
 export const pickKanji = () => {
   return async (dispatch: any, useState: any) => {
-    const validKanji = useState().question.validKanji;
-    const currentKanjiIndex = Math.floor(Math.random() * validKanji.length);
+    // if correct answer, remove currentKanji from validKanji
+    // if all kanji have been answered correctly, show message
+    // if validKanji is an array of kanji objects, pick a random one and get similar kanji
+    // if validKanji is an array of kanji ids, recursively pick a random one until a kanji object with visually_similar_subject_ids > 0 is found
+    // if a kanji object with visually_similar_subject_ids === 0 is found, remove it from validKanji and pick another one
+  };
+};
 
-    dispatch(setCurrentKanji(validKanji[currentKanjiIndex]));
-    dispatch(removeValidKanji(currentKanjiIndex));
+export const answerQuestion = (selectedKanji: Kanji) => {
+  return async (dispatch: any, useState: any) => {
+    const answer = useState().question.currentKanji;
 
-    dispatch(getSimilarKanji(validKanji[currentKanjiIndex].similarIds));
+    dispatch(setAnswered(true));
+
+    if (selectedKanji.id === answer.id) {
+      dispatch(setCorrect(true));
+    } else {
+      dispatch(setCorrect(false));
+    }
+  };
+};
+
+export const nextQuestion = () => {
+  return async (dispatch: any) => {
+    // console.log("next question 2");
+    dispatch(setAnswered(false));
+    dispatch(setCorrect(null));
+    dispatch(pickKanji());
   };
 };
 
