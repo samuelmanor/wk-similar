@@ -11,6 +11,7 @@ export const Question: FC<QuestionProps> = () => {
   const similarKanji = useAppSelector(
     (state) => state.question.currentSimilarKanji
   );
+  const validkanji = useAppSelector((state) => state.question.validKanji);
 
   const questionAnswered = useAppSelector((state) => state.question.answered);
 
@@ -22,9 +23,7 @@ export const Question: FC<QuestionProps> = () => {
 
   return (
     <div className={`mt-5`}>
-      <p onClick={() => console.log(kanji, similarKanji, questionAnswered)}>
-        test
-      </p>
+      <p onClick={() => console.log(validkanji)}>test</p>
       <div className="flex flex-col justify-center items-center">
         <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text mb-2">
           select the kanji that means

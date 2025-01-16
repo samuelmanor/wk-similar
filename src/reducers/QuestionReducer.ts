@@ -104,13 +104,8 @@ const questionSlice = createSlice({
     setCurrentKanji: (state, action) => {
       // remove previous currentKanji from validKanji, if it exists
       if (state.validKanji.length > 0) {
-        state.validKanji = (state.validKanji as (Kanji | number)[]).filter(
-          (kanji: Kanji | number) =>
-            typeof kanji === "number"
-              ? kanji !== state.currentKanji.id
-              : kanji.id !== state.currentKanji.id
-        ) as Kanji[];
-      } // maybe just use removeKanji action instead?
+        state.validKanji = state.validKanji.slice(1);
+      }
 
       state.currentKanji = action.payload;
     },
@@ -124,19 +119,7 @@ const questionSlice = createSlice({
       state.correct = action.payload;
     },
     setValidKanji: (state, action) => {
-      if (current(state).validKanji.length === 0) {
-        state.validKanji = action.payload;
-      } else {
-        state.validKanji = [...current(state).validKanji, action.payload];
-      }
-    },
-    removeKanji: (state, action) => {
-      state.validKanji = (state.validKanji as (Kanji | number)[]).filter(
-        (kanji: Kanji | number) =>
-          typeof kanji === "number"
-            ? kanji !== action.payload
-            : kanji.id !== action.payload
-      ) as Kanji[];
+      state.validKanji = action.payload;
     },
   },
 });
@@ -147,13 +130,12 @@ export const {
   setAnswered,
   setCorrect,
   setValidKanji,
-  removeKanji,
 } = questionSlice.actions;
 
 export const getSimilarKanji = (similarIds: number[]) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
-    let ids = [...similarIds]; // copy array
+    let ids = [...similarIds];
 
     // if more than 3 similar kanji, pick 3 random ones
     if (ids.length > 3) {
@@ -201,11 +183,71 @@ export const getSimilarKanji = (similarIds: number[]) => {
 
 export const pickKanji = () => {
   return async (dispatch: any, useState: any) => {
-    // if correct answer, remove currentKanji from validKanji
-    // if all kanji have been answered correctly, show message
-    // if validKanji is an array of kanji objects, pick a random one and get similar kanji
-    // if validKanji is an array of kanji ids, recursively pick a random one until a kanji object with visually_similar_subject_ids > 0 is found
-    // if a kanji object with visually_similar_subject_ids === 0 is found, remove it from validKanji and pick another one
+    console.log("kanji being picked...");
+    const validKanji = useState().question.validKanji;
+    const apiKey = useState().user.apiKey;
+
+    if (validKanji.length === 0) {
+      console.log("no kanji left");
+      return;
+    }
+
+    if (typeof validKanji[0] === "object") {
+      // console.log("level");
+      dispatch(setCurrentKanji(validKanji[0]));
+      dispatch(getSimilarKanji(validKanji[0].similarIds));
+      dispatch(setValidKanji(validKanji.slice(1)));
+    } else if (typeof validKanji[0] === "number") {
+      // console.log("srs");
+      let currentIndex = 0;
+
+      const fetchKanji = async (index: number) => {
+        await axios
+          .get(`https://api.wanikani.com/v2/subjects/${validKanji[index]}`, {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.data.visually_similar_subject_ids.length > 1) {
+              // console.log("valid");
+              // update validKanji to remove all kanji previous to current kanji
+              dispatch(setValidKanji(validKanji.slice(index + 1)));
+
+              dispatch(
+                setCurrentKanji({
+                  id: res.data.id,
+                  character: res.data.data.characters,
+                  url: res.data.data.document_url,
+                  level: res.data.data.level,
+                  meanings: res.data.data.meanings.map(
+                    (meaning: { meaning: string }) => meaning.meaning
+                  ),
+                  similarIds: res.data.data.visually_similar_subject_ids,
+                })
+              );
+
+              dispatch(
+                getSimilarKanji(res.data.data.visually_similar_subject_ids)
+              );
+            } else {
+              // console.log("invalid");
+              currentIndex += 1;
+              fetchKanji(currentIndex);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+
+            if (err.response.status === 429) {
+              console.log(err.response.data.error);
+            }
+          });
+      };
+
+      fetchKanji(currentIndex);
+    }
   };
 };
 
@@ -235,6 +277,7 @@ export const nextQuestion = () => {
 export const initStudyByLevel = (selectedLevels: string) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
+    let validKanji: Kanji[] = [];
 
     // recursively fetch all pages of kanji ids
     const fetchIds = async (url: string | null) => {
@@ -246,28 +289,25 @@ export const initStudyByLevel = (selectedLevels: string) => {
             },
           })
           .then((res) => {
-            console.log("fetched:", res.data);
-
-            dispatch(
-              setValidKanji(
-                res.data.data
-                  .filter(
-                    (kanji: KanjiSubjectData) =>
-                      kanji.data.visually_similar_subject_ids.length > 1
-                  )
-                  .map((kanji: KanjiSubjectData) => {
-                    return {
-                      id: kanji.id,
-                      character: kanji.data.characters,
-                      url: kanji.url,
-                      level: kanji.data.level,
-                      meanings: kanji.data.meanings.map(
-                        (meaning) => meaning.meaning
-                      ),
-                      similarIds: kanji.data.visually_similar_subject_ids,
-                    };
-                  })
-              )
+            // console.log("fetched:", res.data);
+            validKanji = validKanji.concat(
+              res.data.data
+                .filter(
+                  (kanji: KanjiSubjectData) =>
+                    kanji.data.visually_similar_subject_ids.length > 1
+                )
+                .map((kanji: KanjiSubjectData) => {
+                  return {
+                    id: kanji.id,
+                    character: kanji.data.characters,
+                    url: kanji.url,
+                    level: kanji.data.level,
+                    meanings: kanji.data.meanings.map(
+                      (meaning) => meaning.meaning
+                    ),
+                    similarIds: kanji.data.visually_similar_subject_ids,
+                  };
+                })
             );
 
             if (
@@ -280,6 +320,9 @@ export const initStudyByLevel = (selectedLevels: string) => {
           })
           .catch((err) => {
             console.log(err);
+            if (err.response.stats === 429) {
+              console.log(err.response.data.error);
+            }
           });
       }
     };
@@ -288,6 +331,10 @@ export const initStudyByLevel = (selectedLevels: string) => {
       `https://api.wanikani.com/v2/subjects?types=kanji&started=true&levels=${selectedLevels}`
     );
 
+    // randomize validKanji
+    validKanji = validKanji.sort(() => Math.random() - 0.5);
+    dispatch(setValidKanji(validKanji));
+
     dispatch(pickKanji());
   };
 };
@@ -295,6 +342,8 @@ export const initStudyByLevel = (selectedLevels: string) => {
 export const initStudyBySrs = (selectedStage: string) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
+    let validKanji: number[] = [];
+
     // recursively fetch all pages of kanji ids
     const fetchIds = async (url: string | null) => {
       if (url) {
@@ -305,18 +354,17 @@ export const initStudyBySrs = (selectedStage: string) => {
             },
           })
           .then((res) => {
-            console.log("fetched:", res.data);
+            // console.log("fetched:", res.data);
 
-            dispatch(
-              setValidKanji(
-                res.data.data
-                  .filter(
-                    (kanji: KanjiAssignmentData) =>
-                      kanji.data.subject_type === "kanji"
-                  )
-                  .map((kanji: KanjiAssignmentData) => kanji.data.subject_id)
-              )
-            );
+            validKanji = [
+              ...validKanji,
+              ...res.data.data
+                .filter(
+                  (kanji: KanjiAssignmentData) =>
+                    kanji.data.subject_type === "kanji"
+                )
+                .map((kanji: KanjiAssignmentData) => kanji.data.subject_id),
+            ];
 
             if (
               res.data.total_count > res.data.pages.per_page &&
@@ -328,12 +376,19 @@ export const initStudyBySrs = (selectedStage: string) => {
           })
           .catch((err) => {
             console.log(err);
+            if (err.response.stats === 429) {
+              console.log(err.response.data.error);
+            }
           });
       }
     };
     await fetchIds(
       `https://api.wanikani.com/v2/assignments?srs_stages=${selectedStage}`
     );
+
+    // randomize validKanji
+    validKanji = validKanji.sort(() => Math.random() - 0.5);
+    dispatch(setValidKanji(validKanji));
 
     dispatch(pickKanji());
   };
