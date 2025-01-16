@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { Welcome } from "./components/Welcome";
 import { Question } from "./components/Question";
 import { ModeSelect } from "./components/ModeSelect";
-import { useDispatch } from "react-redux";
+import { Warning } from "./components/Warning";
+import { useDispatch, useSelector } from "react-redux";
 import { setApiKey } from "./reducers/UserReducer";
 
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [gameInitialized, setGameInitialized] = useState(false);
+  const error = useSelector((state) => state.question.error);
 
   const dispatch = useDispatch();
 
@@ -24,6 +26,10 @@ function App() {
 
   if (showWelcome) {
     return <Welcome hide={() => setShowWelcome(false)} />;
+  }
+
+  if (error) {
+    return <Warning />;
   }
 
   return (

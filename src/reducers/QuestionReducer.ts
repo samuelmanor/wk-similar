@@ -80,6 +80,7 @@ interface QuestionState {
   answered: boolean;
   correct: boolean | null;
   validKanji: Kanji[] | number[]; // kanji[] if level mode, number[] if srs mode
+  error: string | null;
 }
 
 const initialState: QuestionState = {
@@ -95,6 +96,7 @@ const initialState: QuestionState = {
   answered: false,
   correct: null,
   validKanji: [],
+  error: null,
 };
 
 const questionSlice = createSlice({
@@ -121,6 +123,9 @@ const questionSlice = createSlice({
     setValidKanji: (state, action) => {
       state.validKanji = action.payload;
     },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
   },
 });
 
@@ -130,6 +135,7 @@ export const {
   setAnswered,
   setCorrect,
   setValidKanji,
+  setError,
 } = questionSlice.actions;
 
 export const getSimilarKanji = (similarIds: number[]) => {
@@ -189,6 +195,7 @@ export const pickKanji = () => {
 
     if (validKanji.length === 0) {
       console.log("no kanji left");
+      dispatch(setError("no kanji left!"));
       return;
     }
 
@@ -242,6 +249,7 @@ export const pickKanji = () => {
 
             if (err.response.status === 429) {
               console.log(err.response.data.error);
+              dispatch(setError("rate limited"));
             }
           });
       };
@@ -322,6 +330,7 @@ export const initStudyByLevel = (selectedLevels: string) => {
             console.log(err);
             if (err.response.stats === 429) {
               console.log(err.response.data.error);
+              dispatch(setError("rate limited"));
             }
           });
       }
@@ -378,6 +387,7 @@ export const initStudyBySrs = (selectedStage: string) => {
             console.log(err);
             if (err.response.stats === 429) {
               console.log(err.response.data.error);
+              dispatch(setError("rate limited"));
             }
           });
       }
