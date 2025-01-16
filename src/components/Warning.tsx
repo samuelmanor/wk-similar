@@ -4,6 +4,9 @@ import { useAppSelector } from "../hooks";
 
 interface WarningProps {}
 
+/**
+ * Displays an error/warning message
+ */
 export const Warning: FC<WarningProps> = () => {
   const message = useAppSelector((state) => state.question.error);
 

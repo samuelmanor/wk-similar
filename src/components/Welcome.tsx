@@ -10,6 +10,9 @@ interface WelcocmeProps {
   hide: () => void;
 }
 
+/**
+ * Displays the welcome screen where the user can enter their wanikani api key
+ */
 export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
   const [key, setKey] = useState("");
   const [showErrorText, setShowErrorText] = useState(false);

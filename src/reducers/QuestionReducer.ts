@@ -138,6 +138,10 @@ export const {
   setError,
 } = questionSlice.actions;
 
+/**
+ * Fetches similar kanji for the current kanji
+ * @param similarIds - The ids of the similar kanji
+ */
 export const getSimilarKanji = (similarIds: number[]) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
@@ -187,6 +191,9 @@ export const getSimilarKanji = (similarIds: number[]) => {
   };
 };
 
+/**
+ * Picks a kanji from the validKanji list and fetches similar kanji
+ */
 export const pickKanji = () => {
   return async (dispatch: any, useState: any) => {
     console.log("kanji being picked...");
@@ -259,6 +266,9 @@ export const pickKanji = () => {
   };
 };
 
+/**
+ * Checks if the selected kanji is the correct answer
+ */
 export const answerQuestion = (selectedKanji: Kanji) => {
   return async (dispatch: any, useState: any) => {
     const answer = useState().question.currentKanji;
@@ -273,6 +283,9 @@ export const answerQuestion = (selectedKanji: Kanji) => {
   };
 };
 
+/**
+ * Resets the question state and picks a new kanji
+ */
 export const nextQuestion = () => {
   return async (dispatch: any) => {
     // console.log("next question 2");
@@ -282,6 +295,10 @@ export const nextQuestion = () => {
   };
 };
 
+/**
+ * Initializes the study session by fetching kanji by level
+ * @param selectedLevels - The levels to fetch kanji from
+ */
 export const initStudyByLevel = (selectedLevels: string) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;
@@ -348,6 +365,10 @@ export const initStudyByLevel = (selectedLevels: string) => {
   };
 };
 
+/**
+ * Initializes the study session by fetching kanji by srs stage
+ * @param selectedStage - The srs stage to fetch kanji from
+ */
 export const initStudyBySrs = (selectedStage: string) => {
   return async (dispatch: any, useState: any) => {
     const apiKey = useState().user.apiKey;

@@ -9,6 +9,11 @@ interface OptionProps {
   kanji: Kanji;
 }
 
+/**
+ * Displays a single kanji option
+ * @param index - The index of the kanji in the list
+ * @param kanji - The kanji object to display
+ */
 export const Option: FC<OptionProps> = ({ index, kanji }) => {
   const [selected, setSelected] = useState(false);
   const answer = useAppSelector((state) => state.question.currentKanji);

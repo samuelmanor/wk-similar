@@ -9,6 +9,10 @@ interface ModeSelectProps {
   startGame: () => void;
 }
 
+/**
+ * Allows the user to select a study mode
+ * @param startGame - The function to start the game
+ */
 export const ModeSelect: FC<ModeSelectProps> = ({ startGame }) => {
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const [selectedSrs, setSelectedSrs] = useState([
