@@ -327,7 +327,7 @@ export const initStudyByLevel = (selectedLevels: string) => {
                   return {
                     id: kanji.id,
                     character: kanji.data.characters,
-                    url: kanji.url,
+                    url: kanji.data.document_url,
                     level: kanji.data.level,
                     meanings: kanji.data.meanings.map(
                       (meaning) => meaning.meaning
