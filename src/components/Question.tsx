@@ -3,6 +3,7 @@ import { FC } from "react";
 import { Kanji, nextQuestion } from "../reducers/QuestionReducer";
 import { Option } from "./Option";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { Mistakes } from "./Mistakes";
 
 interface QuestionProps {}
 
@@ -26,6 +27,7 @@ export const Question: FC<QuestionProps> = () => {
   return (
     <div className={`mt-5`}>
       {/* <p onClick={() => console.log(validkanji)}>test</p> */}
+      <Mistakes />
       <div className="flex flex-col justify-center items-center">
         <h2 className="phone:text-2xl tablet:text-3xl select-none font-body text-text mb-2">
           select the kanji that means

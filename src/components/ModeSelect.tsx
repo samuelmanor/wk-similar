@@ -174,7 +174,7 @@ export const ModeSelect: FC<ModeSelectProps> = ({ startGame }) => {
             </button>
           </div>
         </div>
-        <div className="collapse">
+        {/* <div className="collapse">
           <input type="radio" name="mode-select" />
           <div className="collapse-title bg-pink text-paper cursor-pointer">
             <p className="text-2xl font-bold text-center pl-6">
@@ -184,7 +184,7 @@ export const ModeSelect: FC<ModeSelectProps> = ({ startGame }) => {
           <div className="collapse-content bg-paper text-text">
             <p className="pt-5 pb-1">select stages to study from:</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

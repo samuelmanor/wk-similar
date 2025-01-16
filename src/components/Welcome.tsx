@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { FC } from "react";
-import { useDispatch } from "react-redux";
 import { setApiKey, setLevel } from "../reducers/UserReducer";
 import { LuClipboardPaste } from "react-icons/lu";
 import { IconContext } from "react-icons";
+import { useAppDispatch } from "../hooks";
 
 interface WelcocmeProps {
   hide: () => void;
@@ -17,7 +17,7 @@ export const Welcome: FC<WelcocmeProps> = ({ hide }) => {
   const [key, setKey] = useState("");
   const [showErrorText, setShowErrorText] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleError = () => {
     setShowErrorText(true);

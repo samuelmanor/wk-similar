@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Kanji } from "./QuestionReducer";
-import axios from "axios";
+import { AppDispatch } from "./store";
 
 // interface ReturnedKanjiData {
 //   data: {
@@ -50,12 +50,14 @@ interface UserState {
   apiKey: string;
   level: number;
   kanjiIds: Kanji[];
+  mistakes: Kanji[];
 }
 
 const initialState: UserState = {
   apiKey: "",
   level: 0,
   kanjiIds: [],
+  mistakes: [],
 };
 
 const userSlice = createSlice({
@@ -68,80 +70,19 @@ const userSlice = createSlice({
     setLevel: (state, action: PayloadAction<number>) => {
       state.level = action.payload;
     },
-    // setKanjiIds: (state, action: PayloadAction<Kanji[]>) => {
-    //   state.kanjiIds = action.payload;
-    // },
+    setMistakes: (state, action: PayloadAction<Kanji[]>) => {
+      state.mistakes = action.payload;
+    },
   },
 });
 
-export const { setApiKey, setLevel } = userSlice.actions;
+export const { setApiKey, setLevel, setMistakes } = userSlice.actions;
 
-// export const initStudyByLevel = (
-//   selectedLevels: string | null = null,
-//   selectedStages: string | null = null
-// ) => {
-//   return async (dispatch: any, useState: any) => {
-//     let url = "https://api.wanikani.com/v2/subjects?types=kanji&started=true";
-//     if (selectedLevels) {
-//       url += `&levels=${selectedLevels}`;
-//     } else if (selectedStages) {
-//       url += `&srs_stages=${selectedStages}`;
-//     }
-
-//     console.log("url", url);
-//     const apiKey = useState().user.apiKey;
-
-//     // recursively fetch all pages of kanji ids
-//     const fetchIds = async (url: string | null) => {
-//       if (url) {
-//         await axios
-//           .get(url, {
-//             headers: {
-//               Authorization: `Bearer ${apiKey}`,
-//             },
-//           })
-//           .then((res) => {
-//             console.log("fetched", res.data);
-
-//             dispatch(
-//               setKanjiIds(
-//                 res.data.data
-//                   .filter(
-//                     (kanji: ReturnedKanjiData) =>
-//                       kanji.data.visually_similar_subject_ids.length > 1
-//                   )
-//                   .map((kanji: ReturnedKanjiData) => {
-//                     return {
-//                       id: kanji.id,
-//                       character: kanji.data.characters,
-//                       url: kanji.url,
-//                       level: kanji.data.level,
-//                       meanings: kanji.data.meanings.map(
-//                         (meaning) => meaning.meaning
-//                       ),
-//                       similarIds: kanji.data.visually_similar_subject_ids,
-//                     };
-//                   })
-//               )
-//             );
-
-//             if (
-//               res.data.pages.per_page > res.data.total_count &&
-//               res.data.pages.next_url
-//             ) {
-//               console.log("fetching next page");
-//               fetchIds(res.data.pages.next_url);
-//             }
-//           })
-//           .catch((err) => {
-//             console.log(err);
-//           });
-//       }
-//     };
-
-//     await fetchIds(url);
-//   };
-// };
+export const addMistake = (answer: Kanji) => {
+  return async (dispatch: AppDispatch, useState: any) => {
+    dispatch(setMistakes([...useState().user.mistakes, answer]));
+  };
+};
 
 export default userSlice.reducer;
 // holds api token, user stats (accuracy, etc), user settings (theme, etc), user account info (level, etc)

@@ -1,5 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
+import { addMistake } from "./UserReducer";
 
 interface KanjiSubjectData {
   data: {
@@ -279,6 +280,7 @@ export const answerQuestion = (selectedKanji: Kanji) => {
       dispatch(setCorrect(true));
     } else {
       dispatch(setCorrect(false));
+      dispatch(addMistake(answer));
     }
   };
 };
